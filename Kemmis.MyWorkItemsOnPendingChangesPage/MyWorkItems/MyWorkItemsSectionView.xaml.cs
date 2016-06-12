@@ -12,18 +12,5 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
         {
             InitializeComponent();
         }
-
-        public MyWorkItemsSectionViewModel ParentSectionViewModel
-        {
-            get { return (MyWorkItemsSectionViewModel)GetValue(ParentSectionViewModelProperty); }
-            set { SetValue(ParentSectionViewModelProperty, value); }
-        }
-        public static readonly DependencyProperty ParentSectionViewModelProperty =
-            DependencyProperty.Register("ParentSectionViewModel", typeof(MyWorkItemsSectionViewModel), typeof(MyWorkItemsSectionView));
-
-        private void SettingsLink_OnClick(object sender, RoutedEventArgs e)
-        {
-            ParentSectionViewModel.NavigateToSettingsPage();
-        }
     }
 }

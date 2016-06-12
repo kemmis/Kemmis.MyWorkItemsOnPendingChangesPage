@@ -3,12 +3,14 @@ using Kemmis.MyWorkItemsOnPendingChangesPage.Common;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common.ViewModelBaseClasses;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Settings;
 using Microsoft.TeamFoundation.Controls;
+using Microsoft.TeamFoundation.MVVM;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 {
     [TeamExplorerSection(SectionId, TeamExplorerPageIds.PendingChanges, 900)]
     public class MyWorkItemsSectionViewModel : TeamExplorerBaseSection
     {
+        private RelayCommand _navSettingsCommand;
         public const string SectionId = "4C82595C-9E77-467E-9F25-D886E694C361";
 
         public MyWorkItemsSectionViewModel()
@@ -16,14 +18,12 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
             Title = "My Work Items";
             IsExpanded = true;
             IsBusy = false;
-            SectionContent = new MyWorkItemsSectionView();
-            SectionView.ParentSectionViewModel = this;
+            var view = new MyWorkItemsSectionView();
+            SectionContent = view;
+            view.DataContext = this;
         }
 
-        protected MyWorkItemsSectionView SectionView
-        {
-            get { return this.SectionContent as MyWorkItemsSectionView; }
-        }
+        public RelayCommand NavSettingsCommand => _navSettingsCommand ?? (_navSettingsCommand = new RelayCommand(NavigateToSettingsPage));
 
         public void NavigateToSettingsPage()
         {

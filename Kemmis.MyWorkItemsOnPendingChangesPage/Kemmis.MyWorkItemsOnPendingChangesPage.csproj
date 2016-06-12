@@ -51,7 +51,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Models\SettingItemModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="MyWorkItemsOnPendingChangesPagePackage.cs" />

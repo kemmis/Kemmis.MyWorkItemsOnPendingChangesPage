@@ -8,7 +8,7 @@
     <WrapPanel Margin="6,0,0,0">
         <TextBlock>
                 <Hyperlink x:Name="RefreshLink">Refresh</Hyperlink> |
-                <Hyperlink x:Name="SettingsLink" Click="SettingsLink_OnClick">Settings</Hyperlink>
+                <Hyperlink x:Name="SettingsLink" Command="{Binding NavSettingsCommand}">Settings</Hyperlink>
         </TextBlock>
     </WrapPanel>
 </UserControl>
