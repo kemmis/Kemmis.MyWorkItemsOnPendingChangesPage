@@ -51,22 +51,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Models\SettingItemModel.cs" />
+    <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="MyWorkItemsOnPendingChangesPagePackage.cs" />
-    <Compile Include="MyWorkItemsSection\MyWorkItemsSection.cs" />
-    <Compile Include="MyWorkItemsSection\MyWorkItemsView.xaml.cs">
-      <DependentUpon>MyWorkItemsView.xaml</DependentUpon>
+    <Compile Include="MyWorkItems\MyWorkItemsSectionViewModel.cs" />
+    <Compile Include="MyWorkItems\MyWorkItemsSectionView.xaml.cs">
+      <DependentUpon>MyWorkItemsSectionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsPage\SettingsPage.cs" />
-    <Compile Include="SettingsPage\SettingsView.xaml.cs">
-      <DependentUpon>SettingsView.xaml</DependentUpon>
+    <Compile Include="Services\SettingsRepository.cs" />
+    <Compile Include="Services\WorkItemRepository.cs" />
+    <Compile Include="Settings\SettingsPageViewModel.cs" />
+    <Compile Include="Settings\SettingsPageView.xaml.cs">
+      <DependentUpon>SettingsPageView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TeamExplorerBase\TeamExplorerBase.cs" />
-    <Compile Include="TeamExplorerBase\TeamExplorerBaseNavigationItem.cs" />
-    <Compile Include="TeamExplorerBase\TeamExplorerBaseNavigationLink.cs" />
-    <Compile Include="TeamExplorerBase\TeamExplorerBasePage.cs" />
-    <Compile Include="TeamExplorerBase\TeamExplorerBaseSection.cs" />
+    <Compile Include="Common\ViewModelBaseClasses\TeamExplorerBase.cs" />
+    <Compile Include="Common\ViewModelBaseClasses\TeamExplorerBaseNavigationItem.cs" />
+    <Compile Include="Common\ViewModelBaseClasses\TeamExplorerBaseNavigationLink.cs" />
+    <Compile Include="Common\ViewModelBaseClasses\TeamExplorerBasePage.cs" />
+    <Compile Include="Common\ViewModelBaseClasses\TeamExplorerBaseSection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
@@ -254,11 +258,11 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="MyWorkItemsSection\MyWorkItemsView.xaml">
+    <Page Include="MyWorkItems\MyWorkItemsSectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SettingsPage\SettingsView.xaml">
+    <Page Include="Settings\SettingsPageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

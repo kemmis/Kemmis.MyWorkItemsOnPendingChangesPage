@@ -9,7 +9,7 @@ using System.Diagnostics;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Controls;
 
-namespace Kemmis.MyWorkItemsOnPendingChangesPage.TeamExplorerBase
+namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common.ViewModelBaseClasses
 {
     /// <summary>
     /// Team Explorer plugin common base class.

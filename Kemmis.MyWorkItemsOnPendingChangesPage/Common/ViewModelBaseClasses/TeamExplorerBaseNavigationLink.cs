@@ -6,7 +6,7 @@
 using System;
 using Microsoft.TeamFoundation.Controls;
 
-namespace Kemmis.MyWorkItemsOnPendingChangesPage.TeamExplorerBase
+namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common.ViewModelBaseClasses
 {
     /// <summary>
     /// Team Explorer base navigation link class.

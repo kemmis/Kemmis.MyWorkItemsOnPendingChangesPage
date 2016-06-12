@@ -2,16 +2,16 @@
 using System.Windows.Controls;
 using Microsoft.TeamFoundation.Controls;
 
-namespace Kemmis.MyWorkItemsOnPendingChangesPage.SettingsPage
+namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 {
     /// <summary>
-    /// Interaction logic for SettingsView.xaml
+    /// Interaction logic for SettingsPageView.xaml
     /// </summary>
-    public partial class SettingsView : UserControl
+    public partial class SettingsPageView : UserControl
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public SettingsView(IServiceProvider serviceProvider)
+        public SettingsPageView(IServiceProvider serviceProvider)
         {
             this._serviceProvider = serviceProvider;
             InitializeComponent();
