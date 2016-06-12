@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Windows;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common.ViewModelBaseClasses;
+using Kemmis.MyWorkItemsOnPendingChangesPage.Services;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.MVVM;
 
@@ -10,17 +12,27 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
     public class SettingsPageViewModel : TeamExplorerBasePage
     {
         public const string PageId = "4C82595C-9E77-467E-9F25-D886E694C363";
+        private SettingsRepository _settingsRepository;
+
         public SettingsPageViewModel()
         {
             Title = "My Work Items Settings";
+            
         }
 
         public override void Initialize(object sender, PageInitializeEventArgs e)
         {
             base.Initialize(sender, e);
+            _settingsRepository = new SettingsRepository(e.ServiceProvider);
             var view = new SettingsPageView();
             PageContent = view;
             view.DataContext = this;
+            view.Loaded += ViewOnLoaded;
+        }
+
+        private async void ViewOnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var settings = await _settingsRepository.GetSettingsAsync();
         }
 
         private RelayCommand _saveCommand;
