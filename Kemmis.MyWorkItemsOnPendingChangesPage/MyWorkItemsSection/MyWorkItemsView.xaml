@@ -6,10 +6,10 @@
              xmlns:local="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItemsSection"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <WrapPanel Margin="0,0,0,12">
+    <WrapPanel Margin="6,0,0,0">
         <TextBlock>
-                <Hyperlink x:Name="refreshLink">Refresh</Hyperlink> |
-                <Hyperlink x:Name="settingsLink" Click="SettingsLink_OnClick">Settings</Hyperlink>
+                <Hyperlink x:Name="RefreshLink">Refresh</Hyperlink> |
+                <Hyperlink x:Name="SettingsLink" Click="SettingsLink_OnClick">Settings</Hyperlink>
         </TextBlock>
     </WrapPanel>
 </UserControl>

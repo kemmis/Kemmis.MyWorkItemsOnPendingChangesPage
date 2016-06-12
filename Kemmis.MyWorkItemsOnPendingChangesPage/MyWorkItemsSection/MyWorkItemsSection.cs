@@ -26,5 +26,15 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItemsSection
         {
             get { return this.SectionContent as MyWorkItemsView; }
         }
+
+        public void NavigateToSettingsPage()
+        {
+            // Navigate to the settings page
+            var teamExplorer = GetService<ITeamExplorer>();
+            if (teamExplorer != null)
+            {
+                teamExplorer.NavigateToPage(new Guid(SettingsPage.SettingsPage.PageId), null);
+            }
+        }
     }
 }

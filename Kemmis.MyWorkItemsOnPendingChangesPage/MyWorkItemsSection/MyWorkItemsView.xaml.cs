@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.TeamFoundation.Controls;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItemsSection
 {
@@ -35,7 +36,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItemsSection
 
         private void SettingsLink_OnClick(object sender, RoutedEventArgs e)
         {
-
+            ParentSection.NavigateToSettingsPage();
         }
     }
 }

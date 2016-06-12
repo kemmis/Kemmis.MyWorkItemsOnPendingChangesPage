@@ -4,9 +4,52 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage"
+             xmlns:models="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Models"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
-    </Grid>
+
+    <StackPanel Margin="10">
+        <TextBlock>Show work items where:</TextBlock>
+        <WrapPanel Orientation="Horizontal">
+            <TextBlock>Changed with last</TextBlock>
+            <TextBox Text="14" />
+            <TextBlock>days</TextBlock>
+        </WrapPanel>
+        <ListBox x:Name="StatusListBox" Height="100"
+                 Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:SettingItemModel}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{Binding Checked}" Grid.Column="0"/>
+                        <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="5,0,0,0"></TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox x:Name="ItemTypeListBox" Height="100"
+                 Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:SettingItemModel}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{Binding Checked}" Grid.Column="0"/>
+                        <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="5,0,0,0"></TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
 </UserControl>

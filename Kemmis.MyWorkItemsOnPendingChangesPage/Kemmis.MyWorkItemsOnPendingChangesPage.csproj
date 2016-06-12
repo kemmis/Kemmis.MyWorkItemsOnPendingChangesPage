@@ -51,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Models\SettingItemModel.cs" />
     <Compile Include="MyWorkItemsOnPendingChangesPagePackage.cs" />
     <Compile Include="MyWorkItemsSection\MyWorkItemsSection.cs" />
     <Compile Include="MyWorkItemsSection\MyWorkItemsView.xaml.cs">
