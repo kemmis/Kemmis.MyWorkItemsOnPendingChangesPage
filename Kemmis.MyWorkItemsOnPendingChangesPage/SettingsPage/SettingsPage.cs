@@ -15,7 +15,12 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.SettingsPage
         public SettingsPage()
         {
             Title = "My Work Items Settings";
-            PageContent = new SettingsView();
+        }
+
+        public override void Initialize(object sender, PageInitializeEventArgs e)
+        {
+            base.Initialize(sender, e);
+            PageContent = new SettingsView(ServiceProvider);
         }
     }
 }

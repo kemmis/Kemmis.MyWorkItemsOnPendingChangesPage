@@ -53,8 +53,8 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <WrapPanel Margin="10" HorizontalAlignment="Right">
-            <Button Content="Save" Margin="0,0,10,0" />
-            <Button Content="Cancel" />
+            <Button Content="Save" Margin="0,0,10,0" Click="Button_Click" />
+            <Button Content="Cancel" Click="Button_Click" />
         </WrapPanel>
     </StackPanel>
 </UserControl>
