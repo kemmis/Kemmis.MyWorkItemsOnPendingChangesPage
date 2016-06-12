@@ -9,13 +9,14 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <StackPanel Margin="10">
+       
         <TextBlock>Show work items where:</TextBlock>
         <WrapPanel Orientation="Horizontal">
             <TextBlock>Changed with last</TextBlock>
             <TextBox Text="14" />
             <TextBlock>days</TextBlock>
         </WrapPanel>
-        <ListBox x:Name="StatusListBox" Height="100"
+        <ListBox x:Name="StatusListBox" Height="75"
                  Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:SettingItemModel}">
@@ -33,7 +34,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox x:Name="ItemTypeListBox" Height="100"
+        <ListBox x:Name="ItemTypeListBox" Height="75"
                  Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:SettingItemModel}">
@@ -51,5 +52,9 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <WrapPanel Margin="10" HorizontalAlignment="Right">
+            <Button Content="Save" Margin="0,0,10,0" />
+            <Button Content="Cancel" />
+        </WrapPanel>
     </StackPanel>
 </UserControl>
