@@ -10,13 +10,14 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <StackPanel Margin="10">
-        
+
         <WrapPanel Orientation="Horizontal">
             <TextBlock>Only show items changed with last</TextBlock>
             <TextBox Text="14" />
             <TextBlock>days</TextBlock>
         </WrapPanel>
         <Separator />
+
         <TextBlock Text="Only show items with the statuses:"></TextBlock>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -42,8 +43,8 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <StackPanel Grid.Column="1">
-                <TextBox />
-                <Button Content="Add" ></Button>
+                <TextBox  Text="{Binding StatusToAdd}" />
+                <Button Content="Add" Command="{Binding AddStatusCommand}"></Button>
                 <Button Content="Remove"></Button>
                 <Button Content="Refresh"></Button>
             </StackPanel>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common.ViewModelBaseClasses;
@@ -30,7 +31,20 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
-        public List<SettingItemModel> WorkItemStatuses
+        public string StatusToAdd
+        {
+            get { return _statusToAdd; }
+            set
+            {
+                if (_statusToAdd != value)
+                {
+                    _statusToAdd = value;
+                    RaisePropertyChanged("StatusToAdd");
+                }
+            }
+        }
+
+        public ObservableCollection<SettingItemModel> WorkItemStatuses
         {
             get { return _workItemStatuses; }
             set
@@ -62,7 +76,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         private async void ViewOnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             WorkItemTypes = await _workItemRepository.GetWorkItemTypesAsync();
-            WorkItemStatuses = await _workItemRepository.GetWorkItemStatesAsync();
+            WorkItemStatuses = new ObservableCollection<SettingItemModel>(await _workItemRepository.GetWorkItemStatesAsync());
             var settings = await _settingsRepository.GetSettingsAsync();
         }
 
@@ -71,8 +85,41 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         private RelayCommand _cancelCommand;
         private List<SettingItemModel> _workItemTypes;
-        private List<SettingItemModel> _workItemStatuses;
+        private ObservableCollection<SettingItemModel> _workItemStatuses;
         public RelayCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new RelayCommand(Close));
+
+        private RelayCommand _addStatusCommand;
+        public RelayCommand AddStatusCommand => _addStatusCommand ?? (_addStatusCommand = new RelayCommand(AddStatus));
+
+        private RelayCommand _removeStatusCommand;
+        public RelayCommand RemoveStatusCommand => _removeStatusCommand ?? (_removeStatusCommand = new RelayCommand(RemoveStatus));
+
+        private RelayCommand _refreshStatusesCommand;
+        private string _statusToAdd;
+        public RelayCommand RefreshStatusesCommand => _refreshStatusesCommand ?? (_refreshStatusesCommand = new RelayCommand(RefreshStatuses));
+
+        private void AddStatus()
+        {
+            if (!string.IsNullOrWhiteSpace(StatusToAdd))
+            {
+                WorkItemStatuses.Add(new SettingItemModel()
+                {
+                    Checked = true,
+                    Name = StatusToAdd
+                });
+                StatusToAdd = string.Empty;
+            }
+        }
+
+        private void RemoveStatus()
+        {
+
+        }
+
+        private void RefreshStatuses()
+        {
+
+        }
 
         private void Save()
         {
