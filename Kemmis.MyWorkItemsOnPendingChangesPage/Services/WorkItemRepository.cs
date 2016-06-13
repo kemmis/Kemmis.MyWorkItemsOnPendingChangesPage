@@ -109,7 +109,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                             collection.Add(new WorkItemModel()
                             {
                                 Title = w.Title,
-                                Id = w.Id
+                                Id = w.Id,
+                                State = w.State,
+                                WorkItemType = w.Type.Name,
+                                AssignedTo = w["Assigned To"].ToString()
                             });
                         }
                     }
