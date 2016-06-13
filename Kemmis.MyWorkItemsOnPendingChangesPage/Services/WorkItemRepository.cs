@@ -20,9 +20,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             _context = context;
         }
 
-        public async Task<List<SettingItemModel>> GetWorkItemTypesAsync()
+        public Task<List<SettingItemModel>> GetWorkItemTypesAsync()
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 if (_context != null && _context.HasCollection && _context.HasTeamProject)
                 {
@@ -49,37 +49,40 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             });
         }
 
-        public async Task GetWorkItemStatesAsync(ObservableCollection<SettingItemModel> collection)
+        public Task GetWorkItemStatesAsync(ObservableCollection<SettingItemModel> collection)
         {
-            await Task.Run(() =>
-            {
-                if (_context != null && _context.HasCollection && _context.HasTeamProject)
-                {
-                    var wis = _context.TeamProjectCollection.GetService<WorkItemStore>();
-                    var workItems = wis.Query("Select [State], [Title] " +
-                                              "From WorkItems " +
-                                              "Order By [State] Asc, [Changed Date] Desc");
+            return Task.Run(() =>
+             {
+                 if (_context != null && _context.HasCollection && _context.HasTeamProject)
+                 {
+                     var twoWeeksAgo = DateTime.Now.AddDays(-14).ToShortDateString();
+                     var wis = _context.TeamProjectCollection.GetService<WorkItemStore>();
+                     var queryText =
+                         $@"Select [State], [Title]
+                        From WorkItems where
+                        [Changed Date] > '{twoWeeksAgo}'";
 
+                     var workItems = wis.Query(queryText);
 
-                    foreach (WorkItem w in workItems)
-                    {
-                        if (collection.All(s => s.Name != w.State))
-                        {
-                            collection.Add(new SettingItemModel { Name = w.State });
-                        }
+                     foreach (WorkItem w in workItems)
+                     {
+                         if (collection.All(s => s.Name != w.State))
+                         {
+                             collection.Add(new SettingItemModel { Name = w.State });
+                         }
 
-                        foreach (Revision rev in w.Revisions)
-                        {
-                            var state = rev.Fields["State"].Value as string;
+                         foreach (Revision rev in w.Revisions)
+                         {
+                             var state = rev.Fields["State"].Value as string;
 
-                            if (collection.All(s => s.Name != state))
-                            {
-                                collection.Add(new SettingItemModel { Name = state });
-                            }
-                        }
-                    }
-                };
-            });
+                             if (collection.All(s => s.Name != state))
+                             {
+                                 collection.Add(new SettingItemModel { Name = state });
+                             }
+                         }
+                     }
+                 };
+             });
         }
     }
 }

@@ -29,9 +29,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             _writableSettingsStore = ssm.GetWritableSettingsStore(SettingsScope.UserSettings);
         }
 
-        public async Task<SettingsModel> GetSettingsAsync()
+        public Task<SettingsModel> GetSettingsAsync()
         {
-            return await System.Threading.Tasks.Task.Run(() =>
+            return System.Threading.Tasks.Task.Run(() =>
             {
                 try
                 {
@@ -50,9 +50,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             });
         }
 
-        public async Task<SettingsModel> SaveSettingsAsync(SettingsModel settingsModel)
+        public Task<SettingsModel> SaveSettingsAsync(SettingsModel settingsModel)
         {
-            return await System.Threading.Tasks.Task.Run(() =>
+            return System.Threading.Tasks.Task.Run(() =>
             {
                 try
                 {

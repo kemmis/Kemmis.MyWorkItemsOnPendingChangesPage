@@ -105,9 +105,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             var settings = await _settingsRepository.GetSettingsAsync();
         }
 
-        private async Task LoadStatusesFromServer()
+        private Task LoadStatusesFromServer()
         {
-            await _workItemRepository.GetWorkItemStatesAsync(WorkItemStatuses);
+            return _workItemRepository.GetWorkItemStatesAsync(WorkItemStatuses);
         }
 
         private RelayCommand _saveCommand;
@@ -150,9 +150,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
-        private async Task RefreshStatuses()
+        private Task RefreshStatuses()
         {
-            await LoadStatusesFromServer();
+            return LoadStatusesFromServer();
         }
 
         private void Save()
