@@ -18,8 +18,8 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
         public const string CollectionPath = "MyWorkItemsOnPendingChangesPage";
         public const string PropertyName = "AllSettings";
 
-        private IServiceProvider _vsServiceProvider;
-        private WritableSettingsStore _writableSettingsStore;
+        private readonly IServiceProvider _vsServiceProvider;
+        private readonly WritableSettingsStore _writableSettingsStore;
 
 
         public SettingsRepository(IServiceProvider vsServiceProvider)
@@ -71,7 +71,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                 return settingsModel;
             });
         }
-
+        
         public T GetService<T>()
         {
            

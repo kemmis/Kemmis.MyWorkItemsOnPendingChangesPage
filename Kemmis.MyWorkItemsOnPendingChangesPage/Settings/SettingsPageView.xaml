@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage"
              xmlns:models="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Models"
+             xmlns:settings="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Settings"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -34,10 +35,11 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        <!--<ListBox ItemsSource="{Binding WorkItemTypes}"></ListBox>-->
         <ListBox x:Name="ItemTypeListBox" Height="75"
-                 Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding}">
+                 Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding WorkItemTypes}">
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:SettingItemModel}">
+                <DataTemplate  DataType="{x:Type models:SettingItemModel}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -46,6 +48,7 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
+                        <!--<TextBlock Text="{Binding Name}"></TextBlock>-->
                         <CheckBox IsChecked="{Binding Checked}" Grid.Column="0"/>
                         <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="5,0,0,0"></TextBlock>
                     </Grid>

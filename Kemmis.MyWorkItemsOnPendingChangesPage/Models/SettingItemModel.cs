@@ -8,7 +8,13 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Models
 {
     public class SettingItemModel
     {
+        private string _name;
         public bool Checked { get; set; }
-        public string Name { get; set; }
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
     }
 }
