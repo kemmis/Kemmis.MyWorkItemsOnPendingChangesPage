@@ -30,10 +30,22 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
+        public List<SettingItemModel> WorkItemStatuses
+        {
+            get { return _workItemStatuses; }
+            set
+            {
+                if (_workItemStatuses != value)
+                {
+                    _workItemStatuses = value;
+                    RaisePropertyChanged("WorkItemStatuses");
+                }
+            }
+        }
+
         public SettingsPageViewModel()
         {
             Title = "My Work Items Settings";
-            
         }
 
         public override void Initialize(object sender, PageInitializeEventArgs e)
@@ -50,7 +62,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         private async void ViewOnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             WorkItemTypes = await _workItemRepository.GetWorkItemTypesAsync();
-            var statuses = await _workItemRepository.GetWorkItemStatesAsync();
+            WorkItemStatuses = await _workItemRepository.GetWorkItemStatesAsync();
             var settings = await _settingsRepository.GetSettingsAsync();
         }
 
@@ -59,6 +71,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         private RelayCommand _cancelCommand;
         private List<SettingItemModel> _workItemTypes;
+        private List<SettingItemModel> _workItemStatuses;
         public RelayCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new RelayCommand(Close));
 
         private void Save()

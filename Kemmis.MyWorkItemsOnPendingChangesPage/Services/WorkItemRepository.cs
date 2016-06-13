@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Models;
 using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.Server;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
@@ -57,7 +58,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                     var workItems = wis.Query("Select [State], [Title] " +
                                               "From WorkItems " +
                                               "Order By [State] Asc, [Changed Date] Desc");
-
+                    
                     var states = new List<String>();
                     foreach (WorkItem w in workItems)
                     {
@@ -65,8 +66,19 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                         {
                             states.Add(w.State);
                         }
+
+                        foreach (Revision rev in w.Revisions)
+                        {
+                            var state = rev.Fields["State"].Value as string;
+
+                            if (!states.Contains(state))
+                            {
+                                states.Add(state);
+                            }
+                        }
                     }
-                    return states.Select(s => new SettingItemModel()
+
+                    return states.OrderBy(s=>s).Select(s => new SettingItemModel()
                     {
                         Name = s,
                         Checked = false

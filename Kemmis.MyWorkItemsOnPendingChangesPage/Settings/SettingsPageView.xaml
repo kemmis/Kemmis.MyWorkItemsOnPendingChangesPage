@@ -10,51 +10,77 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <StackPanel Margin="10">
-       
-        <TextBlock>Show work items where:</TextBlock>
+        
         <WrapPanel Orientation="Horizontal">
-            <TextBlock>Changed with last</TextBlock>
+            <TextBlock>Only show items changed with last</TextBlock>
             <TextBox Text="14" />
             <TextBlock>days</TextBlock>
         </WrapPanel>
-        <ListBox x:Name="StatusListBox" Height="75"
-                 Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding}">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:SettingItemModel}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <CheckBox IsChecked="{Binding Checked}" Grid.Column="0"/>
-                        <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="5,0,0,0"></TextBlock>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <!--<ListBox ItemsSource="{Binding WorkItemTypes}"></ListBox>-->
-        <ListBox x:Name="ItemTypeListBox" Height="75"
+        <Separator />
+        <TextBlock Text="Only show items with the statuses:"></TextBlock>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <ListBox x:Name="StatusListBox" Height="100" Grid.Column="0"
+                 Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding WorkItemStatuses}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:SettingItemModel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox IsChecked="{Binding Checked}" Grid.Column="0"/>
+                            <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="5,0,0,0"></TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel Grid.Column="1">
+                <TextBox />
+                <Button Content="Add" ></Button>
+                <Button Content="Remove"></Button>
+                <Button Content="Refresh"></Button>
+            </StackPanel>
+        </Grid>
+        <Separator />
+        <TextBlock Text="Only show items of the selected types:"></TextBlock>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <ListBox x:Name="ItemTypeListBox" Height="100" Grid.Column="0"
                  Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding WorkItemTypes}">
-            <ListBox.ItemTemplate>
-                <DataTemplate  DataType="{x:Type models:SettingItemModel}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <!--<TextBlock Text="{Binding Name}"></TextBlock>-->
-                        <CheckBox IsChecked="{Binding Checked}" Grid.Column="0"/>
-                        <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="5,0,0,0"></TextBlock>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                <ListBox.ItemTemplate>
+                    <DataTemplate  DataType="{x:Type models:SettingItemModel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox IsChecked="{Binding Checked}" Grid.Column="0"/>
+                            <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="5,0,0,0"></TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <StackPanel Grid.Column="1">
+                <TextBox />
+                <Button Content="Add" ></Button>
+                <Button Content="Remove"></Button>
+                <Button Content="Refresh"></Button>
+            </StackPanel>
+        </Grid>
         <WrapPanel Margin="10" HorizontalAlignment="Right">
             <Button Content="Save" Margin="0,0,10,0" Command="{Binding SaveCommand}" />
             <Button Content="Cancel" Command="{Binding CancelCommand}" />
