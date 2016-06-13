@@ -44,6 +44,19 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
+        public SettingItemModel SelectedStatus
+        {
+            get { return _selectedStatus; }
+            set
+            {
+                if (_selectedStatus != value)
+                {
+                    _selectedStatus = value;
+                    RaisePropertyChanged("SelectedStatus");
+                }
+            }
+        }
+
         public ObservableCollection<SettingItemModel> WorkItemStatuses
         {
             get { return _workItemStatuses; }
@@ -96,6 +109,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         private RelayCommand _refreshStatusesCommand;
         private string _statusToAdd;
+        private SettingItemModel _selectedStatus;
         public RelayCommand RefreshStatusesCommand => _refreshStatusesCommand ?? (_refreshStatusesCommand = new RelayCommand(RefreshStatuses));
 
         private void AddStatus()
@@ -113,7 +127,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         private void RemoveStatus()
         {
-
+            if (SelectedStatus != null)
+            {
+                WorkItemStatuses.Remove(SelectedStatus);
+            }
         }
 
         private void RefreshStatuses()

@@ -25,7 +25,8 @@
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <ListBox x:Name="StatusListBox" Height="100" Grid.Column="0"
-                 Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding WorkItemStatuses}">
+                 Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding WorkItemStatuses}"
+                     SelectedItem="{Binding SelectedStatus}">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:SettingItemModel}">
                         <Grid>
@@ -45,8 +46,8 @@
             <StackPanel Grid.Column="1">
                 <TextBox  Text="{Binding StatusToAdd}" />
                 <Button Content="Add" Command="{Binding AddStatusCommand}"></Button>
-                <Button Content="Remove"></Button>
-                <Button Content="Refresh"></Button>
+                <Button Content="Remove" Command="{Binding RemoveStatusCommand}"></Button>
+                <Button Content="Refresh" Command="{Binding RefreshStatusesCommand}"></Button>
             </StackPanel>
         </Grid>
         <Separator />
