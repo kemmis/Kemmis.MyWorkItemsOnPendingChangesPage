@@ -86,7 +86,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             {
                 if (_context != null && _context.HasCollection && _context.HasTeamProject)
                 {
-                    var sinceDate = DateTime.Now.AddDays(settings.DaysBackToQuery).ToShortDateString();
+                    var sinceDate = DateTime.Now.AddDays(-settings.DaysBackToQuery).ToShortDateString();
                     var wis = _context.TeamProjectCollection.GetService<WorkItemStore>();
                     var states = settings.WorkItemStatuses.Where(w => w.Checked).Select(w=>w.Name).ToArray();
                     var statesString = "'" + string.Join("','", states) + "'";
@@ -96,7 +96,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                     var queryText = $@"select * from workitems where 
 	                    [Changed Date] > '{sinceDate}' and 
 	                    [State] in ({statesString}) and 
-	                    [Assigned To]='@me' and
+	                    [Assigned To]=@me and
 	                    [Work Item Type] in ({typesString})
 	                    order by [Changed Date] desc";
 
