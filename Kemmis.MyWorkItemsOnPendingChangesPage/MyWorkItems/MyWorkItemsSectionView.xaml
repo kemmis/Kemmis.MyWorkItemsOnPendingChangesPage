@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:models="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Models"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns:views="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -51,12 +52,14 @@
             </ListView.View>
             <ListView.ContextMenu>
                 <ContextMenu Name="RecentWorkItemsMenu">
-                    <MenuItem Header="Add" Name="Add" Command="{Binding }">
+                    <MenuItem Header="Add" Name="Add" Command="{Binding AddWorkItemCommand}" 
+                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}">
                         <MenuItem.Icon>
                             <Image Source="Images/Add.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Open" Name="Open">
+                    <MenuItem Header="Open" Name="Open" Command="{Binding OpenWorkItemCommand}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}">
                         <MenuItem.Icon>
                             <Image Source="Images/Open.png" />
                         </MenuItem.Icon>

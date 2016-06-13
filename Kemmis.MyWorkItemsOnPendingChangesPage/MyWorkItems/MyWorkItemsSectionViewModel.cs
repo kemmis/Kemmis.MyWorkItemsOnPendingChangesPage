@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using GalaSoft.MvvmLight.Command;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common.ViewModelBaseClasses;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Models;
@@ -10,6 +11,8 @@ using Kemmis.MyWorkItemsOnPendingChangesPage.Services;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Settings;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.MVVM;
+using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
+using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 {
@@ -17,7 +20,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
     public class MyWorkItemsSectionViewModel : TeamExplorerBaseSection
     {
         private RelayCommand _navSettingsCommand;
-        private RelayCommand _refreshCommand;
+        private AsyncRelayCommand _refreshCommand;
+        private RelayCommand<WorkItemModel> _addWorkItemCommand;
+        private RelayCommand<WorkItemModel> _openWorkItemCommand;
+
         public const string SectionId = "4C82595C-9E77-467E-9F25-D886E694C361";
         private SettingsRepository _settingsRepository;
         private WorkItemRepository _workItemRepository;
@@ -86,9 +92,46 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
             await LoadWorkItems();
         }
 
-        public RelayCommand NavSettingsCommand => _navSettingsCommand ?? (_navSettingsCommand = new RelayCommand(NavigateToSettingsPage));
-        public RelayCommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new AsyncRelayCommand(LoadWorkItems));
-     
+        public RelayCommand NavSettingsCommand
+            => _navSettingsCommand ?? (_navSettingsCommand = new RelayCommand(NavigateToSettingsPage));
+
+        public AsyncRelayCommand RefreshCommand
+            => _refreshCommand ?? (_refreshCommand = new AsyncRelayCommand(LoadWorkItems));
+
+        public RelayCommand<WorkItemModel> AddWorkItemCommand
+            => _addWorkItemCommand ?? (_addWorkItemCommand = new RelayCommand<WorkItemModel>(AddWorkItem));
+
+        public RelayCommand<WorkItemModel> OpenWorkItemCommand
+            => _openWorkItemCommand ?? (_openWorkItemCommand = new RelayCommand<WorkItemModel>(OpenWorkItem));
+
+        
+
+        public void AddWorkItem(WorkItemModel workItemModel)
+        {
+            
+        }
+
+        public void OpenWorkItem(WorkItemModel workItemModel)
+        {
+            if (workItemModel == null)
+                return;
+
+            int selectedWorkItemId = workItemModel.Id;
+
+            IWorkItemDocument widoc = null;
+            try
+            {
+                var documentService = GetService<DocumentService>();
+                widoc = documentService.GetWorkItem(CurrentContext.TeamProjectCollection, selectedWorkItemId, this);
+                documentService.ShowWorkItem(widoc);
+            }
+            finally
+            {
+                if (widoc != null)
+                    widoc.Release(this);
+            }
+        }
+
         public void NavigateToSettingsPage()
         {
             // Navigate to the settings page
