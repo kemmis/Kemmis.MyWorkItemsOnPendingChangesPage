@@ -55,13 +55,13 @@
                     <MenuItem Header="Add" Name="Add" Command="{Binding AddWorkItemCommand}" 
                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}">
                         <MenuItem.Icon>
-                            <Image Source="Images/Add.png" />
+                            <Image Source="../Images/Add.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Open" Name="Open" Command="{Binding OpenWorkItemCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}">
                         <MenuItem.Icon>
-                            <Image Source="Images/Open.png" />
+                            <Image Source="../Images/Open.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
