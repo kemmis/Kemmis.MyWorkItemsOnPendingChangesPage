@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -16,11 +17,30 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
     public class MyWorkItemsSectionViewModel : TeamExplorerBaseSection
     {
         private RelayCommand _navSettingsCommand;
+        private RelayCommand _refreshCommand;
         public const string SectionId = "4C82595C-9E77-467E-9F25-D886E694C361";
         private SettingsRepository _settingsRepository;
         private WorkItemRepository _workItemRepository;
         private ObservableRangeCollection<WorkItemModel> _workItems;
         private object _workItemsLock = new object();
+        private bool _isConfigured;
+
+        public bool IsConfigured
+        {
+            get { return _isConfigured; }
+            set
+            {
+                if (_isConfigured != value)
+                {
+                    _isConfigured = value;
+                    RaisePropertyChanged("IsConfigured");
+                    RaisePropertyChanged("NeedsConfigured");
+                }
+            }
+        }
+
+        public bool NeedsConfigured => !IsConfigured;
+
         public ObservableRangeCollection<WorkItemModel> WorkItems
         {
             get
@@ -47,7 +67,6 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
             Title = "My Work Items";
             IsExpanded = true;
             IsBusy = false;
-
         }
 
         public override void Initialize(object sender, SectionInitializeEventArgs e)
@@ -63,11 +82,13 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 
         private async void ViewOnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
+            //GetService<ITeamExplorer>().ShowNotification("Derp Derp derpy!", NotificationType.Information, NotificationFlags.All,  null, Guid.NewGuid());
             await LoadWorkItems();
         }
 
         public RelayCommand NavSettingsCommand => _navSettingsCommand ?? (_navSettingsCommand = new RelayCommand(NavigateToSettingsPage));
-
+        public RelayCommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new AsyncRelayCommand(LoadWorkItems));
+     
         public void NavigateToSettingsPage()
         {
             // Navigate to the settings page
@@ -80,8 +101,14 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 
         public async Task LoadWorkItems()
         {
+            IsBusy = true;
             var settings = await _settingsRepository.GetSettingsAsync();
-            await _workItemRepository.GetWorkItemsAsync(WorkItems, settings);
+            if (settings.WorkItemStatuses.Any(s => s.Checked) && settings.WorkItemTypes.Any(s => s.Checked))
+            {
+                IsConfigured = true;
+                await _workItemRepository.GetWorkItemsAsync(WorkItems, settings);
+            }
+            IsBusy = false;
         }
     }
 }
