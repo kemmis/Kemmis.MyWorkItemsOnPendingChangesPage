@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -11,6 +12,7 @@ using Kemmis.MyWorkItemsOnPendingChangesPage.Services;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Settings;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.MVVM;
+using Microsoft.TeamFoundation.VersionControl.Controls.Extensibility;
 using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
 
@@ -108,7 +110,24 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 
         public void AddWorkItem(WorkItemModel workItemModel)
         {
-            
+            try
+            {
+                if (workItemModel == null)
+                    return;
+
+                int selectedWorkItemId = workItemModel.Id;
+
+                var pc = GetService<IPendingChangesExt>();
+                var model = pc.GetType().GetField("m_workItemsSection", BindingFlags.NonPublic | BindingFlags.Instance);
+                var t = model.FieldType;
+                var mm = model.GetValue(pc);
+                var m = t.GetMethod("AddWorkItemById", BindingFlags.NonPublic | BindingFlags.Instance);
+                m.Invoke(mm, new object[] { selectedWorkItemId });
+            }
+            catch (Exception ex)
+            {
+                ShowNotification(ex.ToString(), NotificationType.Error);
+            }
         }
 
         public void OpenWorkItem(WorkItemModel workItemModel)
