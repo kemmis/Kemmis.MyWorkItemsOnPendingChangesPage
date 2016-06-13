@@ -10,7 +10,24 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"></BooleanToVisibilityConverter>
+        <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"/>
+            <Setter Property="TextDecorations" Value="None"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"/>
+                    <Setter Property="TextDecorations" Value="Underline"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
+
     <StackPanel>
         <WrapPanel Margin="6,0,0,0" Visibility="{Binding Path=IsConfigured, Converter={StaticResource BoolToVisConverter} }">
             <TextBlock>
