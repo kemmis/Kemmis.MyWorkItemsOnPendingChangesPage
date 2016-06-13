@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage"
              xmlns:models="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Models"
              xmlns:settings="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Settings"
+             xmlns:common="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Common"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="300">
 
@@ -13,7 +14,9 @@
 
         <WrapPanel Orientation="Horizontal">
             <TextBlock>Only show items changed with last</TextBlock>
-            <TextBox Text="{Binding DaysBackToQuery}" />
+            <TextBox Text="{Binding DaysBackToQuery}" Width="20" Margin="2,0,2,0"
+                     common:TextBoxMaskBehavior.Mask="Integer" 
+                     common:TextBoxMaskBehavior.MinimumValue="1" />
             <TextBlock>days</TextBlock>
         </WrapPanel>
         <Separator />
