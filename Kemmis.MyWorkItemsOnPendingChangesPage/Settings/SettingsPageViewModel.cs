@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common.ViewModelBaseClasses;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Models;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Services;
+using Microsoft.Internal.VisualStudio.PlatformUI;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.MVVM;
 
@@ -17,6 +20,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         public const string PageId = "4C82595C-9E77-467E-9F25-D886E694C363";
         private SettingsRepository _settingsRepository;
         private WorkItemRepository _workItemRepository;
+        private object _statusesLock = new object();
 
         public List<SettingItemModel> WorkItemTypes
         {
@@ -59,7 +63,15 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         public ObservableCollection<SettingItemModel> WorkItemStatuses
         {
-            get { return _workItemStatuses; }
+            get
+            {
+                if (_workItemStatuses == null)
+                {
+                    _workItemStatuses = new ObservableCollection<SettingItemModel>();
+                    BindingOperations.EnableCollectionSynchronization(_workItemStatuses, _statusesLock);
+                }
+                return _workItemStatuses;
+            }
             set
             {
                 if (_workItemStatuses != value)
@@ -89,8 +101,13 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         private async void ViewOnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             WorkItemTypes = await _workItemRepository.GetWorkItemTypesAsync();
-            WorkItemStatuses = new ObservableCollection<SettingItemModel>(await _workItemRepository.GetWorkItemStatesAsync());
+            await LoadStatusesFromServer();
             var settings = await _settingsRepository.GetSettingsAsync();
+        }
+
+        private async Task LoadStatusesFromServer()
+        {
+            await _workItemRepository.GetWorkItemStatesAsync(WorkItemStatuses);
         }
 
         private RelayCommand _saveCommand;
@@ -110,7 +127,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         private RelayCommand _refreshStatusesCommand;
         private string _statusToAdd;
         private SettingItemModel _selectedStatus;
-        public RelayCommand RefreshStatusesCommand => _refreshStatusesCommand ?? (_refreshStatusesCommand = new RelayCommand(RefreshStatuses));
+        public RelayCommand RefreshStatusesCommand => _refreshStatusesCommand ?? (_refreshStatusesCommand = new AsyncRelayCommand(RefreshStatuses));
 
         private void AddStatus()
         {
@@ -133,9 +150,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
-        private void RefreshStatuses()
+        private async Task RefreshStatuses()
         {
-
+            await LoadStatusesFromServer();
         }
 
         private void Save()

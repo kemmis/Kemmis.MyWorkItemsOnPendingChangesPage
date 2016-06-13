@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,17 +29,17 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                     var wis = _context.TeamProjectCollection.GetService<WorkItemStore>();
 
                     var types = new List<string>();
-                    
+
                     foreach (Project p in wis.Projects)
                     {
                         foreach (WorkItemType t in p.WorkItemTypes)
                         {
-                            
+
                             types.Add(t.Name);
                         }
                     }
 
-                    return types.OrderBy(t => t).Distinct().Select(t=>new SettingItemModel()
+                    return types.OrderBy(t => t).Distinct().Select(t => new SettingItemModel()
                     {
                         Name = t,
                         Checked = true
@@ -48,9 +49,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             });
         }
 
-        public async Task<List<SettingItemModel>> GetWorkItemStatesAsync()
+        public async Task GetWorkItemStatesAsync(ObservableCollection<SettingItemModel> collection)
         {
-            return await Task.Run(() =>
+            await Task.Run(() =>
             {
                 if (_context != null && _context.HasCollection && _context.HasTeamProject)
                 {
@@ -58,34 +59,26 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                     var workItems = wis.Query("Select [State], [Title] " +
                                               "From WorkItems " +
                                               "Order By [State] Asc, [Changed Date] Desc");
-                    
-                    var states = new List<String>();
+
+
                     foreach (WorkItem w in workItems)
                     {
-                        if (!states.Contains(w.State))
+                        if (collection.All(s => s.Name != w.State))
                         {
-                            states.Add(w.State);
+                            collection.Add(new SettingItemModel { Name = w.State });
                         }
 
                         foreach (Revision rev in w.Revisions)
                         {
                             var state = rev.Fields["State"].Value as string;
 
-                            if (!states.Contains(state))
+                            if (collection.All(s => s.Name != state))
                             {
-                                states.Add(state);
+                                collection.Add(new SettingItemModel { Name = state });
                             }
                         }
                     }
-
-                    return states.OrderBy(s=>s).Select(s => new SettingItemModel()
-                    {
-                        Name = s,
-                        Checked = false
-                    }).ToList();
                 };
-
-                return new List<SettingItemModel>();
             });
         }
     }
