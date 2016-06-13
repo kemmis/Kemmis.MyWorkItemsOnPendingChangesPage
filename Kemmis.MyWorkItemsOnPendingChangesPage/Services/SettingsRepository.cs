@@ -46,7 +46,12 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                     Debug.Fail(ex.Message);
                 }
 
-                return new SettingsModel();
+                return new SettingsModel()
+                {
+                    WorkItemTypes = new List<SettingItemModel>(),
+                    WorkItemStatuses = new List<SettingItemModel>(),
+                    DaysBackToQuery = 10
+                };
             });
         }
 

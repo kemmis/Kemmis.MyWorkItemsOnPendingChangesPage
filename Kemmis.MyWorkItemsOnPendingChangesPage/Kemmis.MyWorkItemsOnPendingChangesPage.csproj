@@ -51,8 +51,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Common\ObservableRangeCollection.cs" />
     <Compile Include="Models\SettingItemModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
+    <Compile Include="Models\WorkItemModel.cs" />
     <Compile Include="MyWorkItemsOnPendingChangesPagePackage.cs" />
     <Compile Include="MyWorkItems\MyWorkItemsSectionViewModel.cs" />
     <Compile Include="MyWorkItems\MyWorkItemsSectionView.xaml.cs">

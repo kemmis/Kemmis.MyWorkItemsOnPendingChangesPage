@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -21,10 +22,35 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         private SettingsRepository _settingsRepository;
         private WorkItemRepository _workItemRepository;
         private object _statusesLock = new object();
+        private object _typesLock = new object();
 
-        public List<SettingItemModel> WorkItemTypes
+        public int DaysBackToQuery
         {
-            get { return _workItemTypes; }
+            get
+            {
+                return _daysBackToQuery;
+            }
+            set
+            {
+                if (_daysBackToQuery != value)
+                {
+                    _daysBackToQuery = value;
+                    RaisePropertyChanged("DaysBackToQuery");
+                }
+            }
+        }
+
+        public ObservableRangeCollection<SettingItemModel> WorkItemTypes
+        {
+            get
+            {
+                if (_workItemTypes == null)
+                {
+                    _workItemTypes = new ObservableRangeCollection<SettingItemModel>();
+                    BindingOperations.EnableCollectionSynchronization(_workItemTypes, _typesLock);
+                }
+                return _workItemTypes;
+            }
             set
             {
                 if (_workItemTypes != value)
@@ -61,13 +87,13 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
-        public ObservableCollection<SettingItemModel> WorkItemStatuses
+        public ObservableRangeCollection<SettingItemModel> WorkItemStatuses
         {
             get
             {
                 if (_workItemStatuses == null)
                 {
-                    _workItemStatuses = new ObservableCollection<SettingItemModel>();
+                    _workItemStatuses = new ObservableRangeCollection<SettingItemModel>();
                     BindingOperations.EnableCollectionSynchronization(_workItemStatuses, _statusesLock);
                 }
                 return _workItemStatuses;
@@ -100,11 +126,31 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         private async void ViewOnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            WorkItemTypes = await _workItemRepository.GetWorkItemTypesAsync();
-            await LoadStatusesFromServer();
-            var settings = await _settingsRepository.GetSettingsAsync();
+            await LoadSavedState();
         }
 
+        private async Task LoadSavedState()
+        {
+            var settings = await _settingsRepository.GetSettingsAsync();
+            WorkItemTypes.AddRange(settings.WorkItemTypes);
+            WorkItemStatuses.AddRange(settings.WorkItemStatuses);
+            DaysBackToQuery = settings.DaysBackToQuery;
+
+            if (!WorkItemTypes.Any())
+            {
+                await LoadTypesFromServer();
+            }
+
+            if (!WorkItemStatuses.Any())
+            {
+                await LoadStatusesFromServer();
+            }
+        }
+
+        private Task LoadTypesFromServer()
+        {
+            return _workItemRepository.GetWorkItemTypesAsync(WorkItemTypes);
+        }
         private Task LoadStatusesFromServer()
         {
             return _workItemRepository.GetWorkItemStatesAsync(WorkItemStatuses);
@@ -114,8 +160,8 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(Save));
 
         private RelayCommand _cancelCommand;
-        private List<SettingItemModel> _workItemTypes;
-        private ObservableCollection<SettingItemModel> _workItemStatuses;
+        private ObservableRangeCollection<SettingItemModel> _workItemTypes;
+        private ObservableRangeCollection<SettingItemModel> _workItemStatuses;
         public RelayCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new RelayCommand(Close));
 
         private RelayCommand _addStatusCommand;
@@ -127,6 +173,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         private RelayCommand _refreshStatusesCommand;
         private string _statusToAdd;
         private SettingItemModel _selectedStatus;
+        private int _daysBackToQuery;
         public RelayCommand RefreshStatusesCommand => _refreshStatusesCommand ?? (_refreshStatusesCommand = new AsyncRelayCommand(RefreshStatuses));
 
         private void AddStatus()
@@ -157,6 +204,15 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         private void Save()
         {
+            var settings = new SettingsModel()
+            {
+                DaysBackToQuery = DaysBackToQuery,
+                WorkItemTypes = WorkItemTypes.ToList(),
+                WorkItemStatuses = WorkItemStatuses.ToList()
+            };
+
+            _settingsRepository.SaveSettingsAsync(settings);
+
             Close();
         }
 

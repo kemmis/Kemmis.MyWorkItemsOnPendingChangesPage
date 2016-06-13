@@ -20,7 +20,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             _context = context;
         }
 
-        public Task<List<SettingItemModel>> GetWorkItemTypesAsync()
+        public Task GetWorkItemTypesAsync(ObservableCollection<SettingItemModel> collection)
         {
             return Task.Run(() =>
             {
@@ -34,18 +34,13 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                     {
                         foreach (WorkItemType t in p.WorkItemTypes)
                         {
-
-                            types.Add(t.Name);
+                            if (collection.All(s => s.Name != t.Name))
+                            {
+                                collection.Add(new SettingItemModel { Name = t.Name });
+                            }
                         }
                     }
-
-                    return types.OrderBy(t => t).Distinct().Select(t => new SettingItemModel()
-                    {
-                        Name = t,
-                        Checked = true
-                    }).ToList();
                 }
-                return null;
             });
         }
 
@@ -83,6 +78,44 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                      }
                  };
              });
+        }
+
+        public Task GetWorkItemsAsync(ObservableCollection<WorkItemModel> collection, SettingsModel settings)
+        {
+            return Task.Run(() =>
+            {
+                if (_context != null && _context.HasCollection && _context.HasTeamProject)
+                {
+                    var sinceDate = DateTime.Now.AddDays(settings.DaysBackToQuery).ToShortDateString();
+                    var wis = _context.TeamProjectCollection.GetService<WorkItemStore>();
+                    var states = settings.WorkItemStatuses.Where(w => w.Checked).Select(w=>w.Name).ToArray();
+                    var statesString = "'" + string.Join("','", states) + "'";
+                    var types = settings.WorkItemTypes.Where(w => w.Checked).Select(w => w.Name).ToArray();
+                    var typesString = "'" + string.Join("','", types) + "'";
+
+                    var queryText = $@"select * from workitems where 
+	                    [Changed Date] > '{sinceDate}' and 
+	                    [State] in ({statesString}) and 
+	                    [Assigned To]='@me' and
+	                    [Work Item Type] in ({typesString})
+	                    order by [Changed Date] desc";
+
+                    var workItems = wis.Query(queryText);
+
+                    foreach (WorkItem w in workItems)
+                    {
+                        if (collection.All(t => t.Id != w.Id))
+                        {
+                            collection.Add(new WorkItemModel()
+                            {
+                                Title = w.Title,
+                                Id = w.Id
+                            });
+                        }
+                    }
+                    
+                };
+            });
         }
     }
 }

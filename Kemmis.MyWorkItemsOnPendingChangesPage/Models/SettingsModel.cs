@@ -9,8 +9,8 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Models
 {
     public class SettingsModel
     {
-        public ObservableCollection<SettingItemModel> WorkItemTypes { get; set; }
-        public ObservableCollection<SettingItemModel> WorkItemStatuses { get; set; }
+        public List<SettingItemModel> WorkItemTypes { get; set; }
+        public List<SettingItemModel> WorkItemStatuses { get; set; }
         public int DaysBackToQuery { get; set; }
     }
 }
