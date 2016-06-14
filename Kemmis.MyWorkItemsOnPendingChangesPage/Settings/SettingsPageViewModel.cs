@@ -163,6 +163,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             WorkItemStatuses.AddRange(settings.WorkItemStatuses);
             DaysBackToQuery = settings.DaysBackToQuery;
 
+            
             if (!WorkItemTypes.Any())
             {
                 await LoadTypesFromServer();
@@ -174,13 +175,18 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
-        private Task LoadTypesFromServer()
+        private async Task LoadTypesFromServer()
         {
-            return _workItemRepository.GetWorkItemTypesAsync(WorkItemTypes);
+            IsBusy = true;
+            await _workItemRepository.GetWorkItemTypesAsync(WorkItemTypes);
+            IsBusy = false;
         }
-        private Task LoadStatusesFromServer()
+
+        private async Task LoadStatusesFromServer()
         {
-            return _workItemRepository.GetWorkItemStatesAsync(WorkItemStatuses);
+            IsBusy = true;
+            await _workItemRepository.GetWorkItemStatesAsync(WorkItemStatuses);
+            IsBusy = false;
         }
 
         private RelayCommand _saveCommand;
