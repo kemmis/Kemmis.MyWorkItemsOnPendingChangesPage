@@ -52,6 +52,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common\ObservableRangeCollection.cs" />
+    <Compile Include="Common\SortedObservableRangeCollection.cs" />
     <Compile Include="Common\TextBoxMaskBehavior.cs" />
     <Compile Include="Models\SettingItemModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />

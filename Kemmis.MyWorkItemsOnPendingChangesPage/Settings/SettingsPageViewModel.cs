@@ -40,13 +40,13 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
-        public ObservableRangeCollection<SettingItemModel> WorkItemTypes
+        public SortedObservableRangeCollection<SettingItemModel> WorkItemTypes
         {
             get
             {
                 if (_workItemTypes == null)
                 {
-                    _workItemTypes = new ObservableRangeCollection<SettingItemModel>();
+                    _workItemTypes = new SortedObservableRangeCollection<SettingItemModel>();
                     BindingOperations.EnableCollectionSynchronization(_workItemTypes, _typesLock);
                 }
                 return _workItemTypes;
@@ -87,13 +87,13 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
-        public ObservableRangeCollection<SettingItemModel> WorkItemStatuses
+        public SortedObservableRangeCollection<SettingItemModel> WorkItemStatuses
         {
             get
             {
                 if (_workItemStatuses == null)
                 {
-                    _workItemStatuses = new ObservableRangeCollection<SettingItemModel>();
+                    _workItemStatuses = new SortedObservableRangeCollection<SettingItemModel>();
                     BindingOperations.EnableCollectionSynchronization(_workItemStatuses, _statusesLock);
                 }
                 return _workItemStatuses;
@@ -160,8 +160,8 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(Save));
 
         private RelayCommand _cancelCommand;
-        private ObservableRangeCollection<SettingItemModel> _workItemTypes;
-        private ObservableRangeCollection<SettingItemModel> _workItemStatuses;
+        private SortedObservableRangeCollection<SettingItemModel> _workItemTypes;
+        private SortedObservableRangeCollection<SettingItemModel> _workItemStatuses;
         public RelayCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new RelayCommand(Close));
 
         private RelayCommand _addStatusCommand;
