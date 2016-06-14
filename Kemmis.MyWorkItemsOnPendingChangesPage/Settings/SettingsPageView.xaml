@@ -131,7 +131,7 @@
                 <ColumnDefinition Width="3*"></ColumnDefinition>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ListBox x:Name="ItemTypeListBox" Height="100" Grid.Column="0" VerticalAlignment="Top"
+            <ListBox x:Name="ItemTypeListBox" Height="100" Grid.Column="0" VerticalAlignment="Top" SelectedItem="{Binding SelectedType}"
                  Margin="0,10,10,0" SelectionMode="Single" ItemsSource="{Binding WorkItemTypes}"  ItemContainerStyle="{DynamicResource lbDefaultItemContainerStyle}">
                 <ListBox.ItemTemplate>
                     <DataTemplate  DataType="{x:Type models:SettingItemModel}">
@@ -151,10 +151,10 @@
                 </ListBox.ItemTemplate>
             </ListBox>
             <StackPanel Grid.Column="1" Margin="0,10">
-                <TextBox Margin="0,0,0,5"  />
-                <Button Content="Add" Margin="0,0,0,5" ></Button>
-                <Button Content="Remove" Margin="0,0,0,5" ></Button>
-                <Button Content="Refresh" ></Button>
+                <TextBox Margin="0,0,0,5" Text="{Binding TypeToAdd}" />
+                <Button Content="Add" Margin="0,0,0,5" Command="{Binding AddTypeCommand}" ></Button>
+                <Button Content="Remove" Margin="0,0,0,5" Command="{Binding RemoveTypeCommand}"></Button>
+                <Button Content="Refresh" Command="{Binding RefreshTypesCommand}"></Button>
             </StackPanel>
         </Grid>
         <WrapPanel Margin="10" HorizontalAlignment="Right">

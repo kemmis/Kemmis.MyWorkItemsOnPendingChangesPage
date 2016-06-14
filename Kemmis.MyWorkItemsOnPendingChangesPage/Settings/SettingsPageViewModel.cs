@@ -61,6 +61,19 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
+        public string TypeToAdd
+        {
+            get { return _typeToAdd; }
+            set
+            {
+                if (_typeToAdd != value)
+                {
+                    _typeToAdd = value;
+                    RaisePropertyChanged("TypeToAdd");
+                }
+            }
+        }
+
         public string StatusToAdd
         {
             get { return _statusToAdd; }
@@ -83,6 +96,20 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
                 {
                     _selectedStatus = value;
                     RaisePropertyChanged("SelectedStatus");
+                }
+            }
+        }
+
+        private SettingItemModel _selectedType;
+        public SettingItemModel SelectedType
+        {
+            get { return _selectedType; }
+            set
+            {
+                if (_selectedType != value)
+                {
+                    _selectedType = value;
+                    RaisePropertyChanged("SelectedType");
                 }
             }
         }
@@ -170,11 +197,47 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         private RelayCommand _removeStatusCommand;
         public RelayCommand RemoveStatusCommand => _removeStatusCommand ?? (_removeStatusCommand = new RelayCommand(RemoveStatus));
 
+        private RelayCommand _addTypeCommand;
+        public RelayCommand AddTypeCommand => _addTypeCommand ?? (_addTypeCommand = new RelayCommand(AddType));
+
+        private RelayCommand _removeTypeCommand;
+        public RelayCommand RemoveTypeCommand => _removeTypeCommand ?? (_removeTypeCommand = new RelayCommand(RemoveType));
+
+        private RelayCommand _refreshTypesCommand;
+        public RelayCommand RefreshTypesCommand => _refreshTypesCommand ?? (_refreshTypesCommand = new AsyncRelayCommand(RefreshTypes));
+
         private RelayCommand _refreshStatusesCommand;
         private string _statusToAdd;
         private SettingItemModel _selectedStatus;
         private int _daysBackToQuery;
+        private string _typeToAdd;
         public RelayCommand RefreshStatusesCommand => _refreshStatusesCommand ?? (_refreshStatusesCommand = new AsyncRelayCommand(RefreshStatuses));
+
+        private void AddType()
+        {
+            if (!string.IsNullOrWhiteSpace(TypeToAdd))
+            {
+                WorkItemTypes.Add(new SettingItemModel()
+                {
+                    Checked = true,
+                    Name = TypeToAdd
+                });
+                TypeToAdd = string.Empty;
+            }
+        }
+
+        private void RemoveType()
+        {
+            if (SelectedType != null)
+            {
+                WorkItemTypes.Remove(SelectedType);
+            }
+        }
+
+        private Task RefreshTypes()
+        {
+            return LoadTypesFromServer();
+        }
 
         private void AddStatus()
         {
