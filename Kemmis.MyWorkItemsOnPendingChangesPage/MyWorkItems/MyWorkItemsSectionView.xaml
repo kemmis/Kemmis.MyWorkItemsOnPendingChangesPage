@@ -41,6 +41,7 @@
         </TextBlock>
 
         <ListView ItemsSource="{Binding WorkItems}" BorderThickness="0" Margin="0,6,0,0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                   Visibility="{Binding Path=IsConfigured, Converter={StaticResource BoolToVisConverter} }">
             <ListView.View>
                 <GridView>
@@ -49,7 +50,7 @@
                             <Setter Property="FrameworkElement.Visibility" Value="Collapsed"/>
                         </Style>
                     </GridView.ColumnHeaderContainerStyle>
-                    <GridViewColumn>
+                    <GridViewColumn Width="Auto">
                         <GridViewColumnHeader Content="Work Item"/>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -57,7 +58,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn>
+                    <GridViewColumn Width="Auto">
                         <GridViewColumnHeader Content="Title"/>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
