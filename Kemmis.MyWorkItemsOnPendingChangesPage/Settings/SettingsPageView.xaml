@@ -7,9 +7,80 @@
              xmlns:models="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Models"
              xmlns:settings="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Settings"
              xmlns:common="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Common"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns:derp="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
+        <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
+        <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#3DDADADA"/>
+        <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#FFDADADA"/>
+        <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#3D26A0DA"/>
+        <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA"/>
+        <Style x:Key="lbDefaultItemContainerStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static derp:CommonControlsColors.TextBoxBackgroundBrushKey}}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="True">
+                                <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static derp:CommonControlsColors.TextBoxTextBrushKey }}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.MouseOver.Border}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
 
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
     <StackPanel Margin="10">
 
         <WrapPanel Orientation="Horizontal">
@@ -19,7 +90,7 @@
                      common:TextBoxMaskBehavior.MinimumValue="1" />
             <TextBlock>days</TextBlock>
         </WrapPanel>
-        <Separator />
+        <Separator Margin="0,5,0,5" />
 
         <TextBlock Text="Only show items with the statuses:"></TextBlock>
         <Grid>
@@ -27,9 +98,9 @@
                 <ColumnDefinition Width="3*"></ColumnDefinition>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ListBox x:Name="StatusListBox" Height="100" Grid.Column="0"
-                 Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding WorkItemStatuses}"
-                     SelectedItem="{Binding SelectedStatus}">
+            <ListBox x:Name="StatusListBox" Height="100" Grid.Column="0" VerticalAlignment="Top"
+                 Margin="0,10,10,0" SelectionMode="Single" ItemsSource="{Binding WorkItemStatuses}"
+                     SelectedItem="{Binding SelectedStatus}" ItemContainerStyle="{DynamicResource lbDefaultItemContainerStyle}">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:SettingItemModel}">
                         <Grid>
@@ -46,22 +117,22 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <StackPanel Grid.Column="1">
-                <TextBox  Text="{Binding StatusToAdd}" />
-                <Button Content="Add" Command="{Binding AddStatusCommand}"></Button>
-                <Button Content="Remove" Command="{Binding RemoveStatusCommand}"></Button>
-                <Button Content="Refresh" Command="{Binding RefreshStatusesCommand}"></Button>
+            <StackPanel Grid.Column="1" Margin="0,10">
+                <TextBox  Text="{Binding StatusToAdd}" Margin="0,0,0,5" />
+                <Button Content="Add" Command="{Binding AddStatusCommand}" Margin="0,0,0,5" ></Button>
+                <Button Content="Remove" Command="{Binding RemoveStatusCommand}" Margin="0,0,0,5"></Button>
+                <Button Content="Refresh" Command="{Binding RefreshStatusesCommand}" ></Button>
             </StackPanel>
         </Grid>
-        <Separator />
+        <Separator Margin="0,5" />
         <TextBlock Text="Only show items of the selected types:"></TextBlock>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"></ColumnDefinition>
                 <ColumnDefinition Width="1*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ListBox x:Name="ItemTypeListBox" Height="100" Grid.Column="0"
-                 Margin="10,10,10,10" SelectionMode="Single" ItemsSource="{Binding WorkItemTypes}">
+            <ListBox x:Name="ItemTypeListBox" Height="100" Grid.Column="0" VerticalAlignment="Top"
+                 Margin="0,10,10,0" SelectionMode="Single" ItemsSource="{Binding WorkItemTypes}"  ItemContainerStyle="{DynamicResource lbDefaultItemContainerStyle}">
                 <ListBox.ItemTemplate>
                     <DataTemplate  DataType="{x:Type models:SettingItemModel}">
                         <Grid>
@@ -79,11 +150,11 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <StackPanel Grid.Column="1">
-                <TextBox />
-                <Button Content="Add" ></Button>
-                <Button Content="Remove"></Button>
-                <Button Content="Refresh"></Button>
+            <StackPanel Grid.Column="1" Margin="0,10">
+                <TextBox Margin="0,0,0,5"  />
+                <Button Content="Add" Margin="0,0,0,5" ></Button>
+                <Button Content="Remove" Margin="0,0,0,5" ></Button>
+                <Button Content="Refresh" ></Button>
             </StackPanel>
         </Grid>
         <WrapPanel Margin="10" HorizontalAlignment="Right">
