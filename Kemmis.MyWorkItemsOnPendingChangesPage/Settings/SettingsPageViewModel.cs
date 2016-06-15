@@ -24,6 +24,20 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         private object _statusesLock = new object();
         private object _typesLock = new object();
 
+        public int MaxWorkItems
+        {
+            get { return _maxWorkItems; }
+            set
+            {
+                if (_maxWorkItems != value)
+                {
+                    _maxWorkItems = value;
+                    RaisePropertyChanged("MaxWorkItems");
+                }
+                
+            }
+        }
+
         public int DaysBackToQuery
         {
             get
@@ -162,7 +176,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             WorkItemTypes.AddRange(settings.WorkItemTypes);
             WorkItemStatuses.AddRange(settings.WorkItemStatuses);
             DaysBackToQuery = settings.DaysBackToQuery;
-
+            MaxWorkItems = settings.MaxWorkItems;
             
             if (!WorkItemTypes.Any())
             {
@@ -217,6 +231,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         private SettingItemModel _selectedStatus;
         private int _daysBackToQuery;
         private string _typeToAdd;
+        private int _maxWorkItems;
         public RelayCommand RefreshStatusesCommand => _refreshStatusesCommand ?? (_refreshStatusesCommand = new AsyncRelayCommand(RefreshStatuses));
 
         private void AddType()
@@ -276,6 +291,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             var settings = new SettingsModel()
             {
                 DaysBackToQuery = DaysBackToQuery,
+                MaxWorkItems = MaxWorkItems,
                 WorkItemTypes = WorkItemTypes.ToList(),
                 WorkItemStatuses = WorkItemStatuses.ToList()
             };

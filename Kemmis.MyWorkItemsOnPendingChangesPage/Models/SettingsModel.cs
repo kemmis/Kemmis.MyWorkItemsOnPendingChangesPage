@@ -12,5 +12,6 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Models
         public List<SettingItemModel> WorkItemTypes { get; set; }
         public List<SettingItemModel> WorkItemStatuses { get; set; }
         public int DaysBackToQuery { get; set; }
+        public int MaxWorkItems { get; set; }
     }
 }

@@ -50,7 +50,8 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                 {
                     WorkItemTypes = new List<SettingItemModel>(),
                     WorkItemStatuses = new List<SettingItemModel>(),
-                    DaysBackToQuery = 10
+                    DaysBackToQuery = 10,
+                    MaxWorkItems = 8
                 };
             });
         }

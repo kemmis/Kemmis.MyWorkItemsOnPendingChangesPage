@@ -14,7 +14,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
 {
     public class WorkItemRepository
     {
-        private ITeamFoundationContext _context;
+        private readonly ITeamFoundationContext _context;
         public WorkItemRepository(ITeamFoundationContext context)
         {
             _context = context;
@@ -104,6 +104,11 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
 
                     foreach (WorkItem w in workItems)
                     {
+                        if (collection.Count >= settings.MaxWorkItems)
+                        {
+                            break;
+                        }
+
                         if (collection.All(t => t.Id != w.Id))
                         {
                             collection.Add(new WorkItemModel()
