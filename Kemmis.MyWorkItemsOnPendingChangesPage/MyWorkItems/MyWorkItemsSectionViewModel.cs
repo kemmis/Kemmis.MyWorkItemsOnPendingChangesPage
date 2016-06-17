@@ -90,7 +90,6 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 
         private async void ViewOnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
-            //GetService<ITeamExplorer>().ShowNotification("Derp Derp derpy!", NotificationType.Information, NotificationFlags.All,  null, Guid.NewGuid());
             await LoadWorkItems();
         }
 
