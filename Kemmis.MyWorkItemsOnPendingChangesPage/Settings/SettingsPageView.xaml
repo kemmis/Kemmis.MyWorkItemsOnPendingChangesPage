@@ -84,7 +84,7 @@
     <StackPanel Margin="10">
 
         <WrapPanel Orientation="Horizontal">
-            <TextBlock>Only show items changed with last</TextBlock>
+            <TextBlock>Only show items changed within last</TextBlock>
             <TextBox Text="{Binding DaysBackToQuery}" Width="20" Margin="5,0"
                      common:TextBoxMaskBehavior.Mask="Integer" 
                      common:TextBoxMaskBehavior.MinimumValue="1" />
