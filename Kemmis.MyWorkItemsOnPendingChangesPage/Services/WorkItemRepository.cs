@@ -102,6 +102,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
 
                     var workItems = wis.Query(queryText);
 
+                    // clear collection so items truely get refreshed
+                    collection.Clear();
+
                     foreach (WorkItem w in workItems)
                     {
                         if (collection.Count >= settings.MaxWorkItems)
