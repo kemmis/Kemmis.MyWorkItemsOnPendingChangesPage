@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 {
-    [TeamExplorerSection(SectionId, TeamExplorerPageIds.PendingChanges, 900)]
+    [TeamExplorerSection(SectionId, TeamExplorerPageIds.PendingChanges, 35)]
     public class MyWorkItemsSectionViewModel : TeamExplorerBaseSection
     {
         private RelayCommand _navSettingsCommand;
