@@ -137,48 +137,48 @@
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.Build.Client.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.Build.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.Build.Common.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.Build.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build.Workflow">
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.Build.Workflow.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.Build.Workflow.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.Client.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.Common.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Controls, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.Controls.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.TestManagement.Client, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.TestManagement.Client.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.TestManagement.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.VersionControl.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.VersionControl.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.VersionControl.Common.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.VersionControl.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.VersionControl.Controls">
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.VersionControl.Controls.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.VersionControl.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.TeamFoundation.WorkItemTracking.Client.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.WorkItemTracking.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Controls">
-      <HintPath>..\..\..\..\..\Desktop\Other\Microsoft.TeamFoundation.WorkItemTracking.Controls.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.TeamFoundation.WorkItemTracking.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -192,10 +192,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.Client">
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.VisualStudio.Services.Client.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.VisualStudio.Services.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.Common">
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.VisualStudio.Services.Common.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.VisualStudio.Services.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -249,10 +249,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TeamFoundation">
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.VisualStudio.TeamFoundation.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.VisualStudio.TeamFoundation.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TeamFoundation.Build">
-      <HintPath>..\..\..\..\..\Desktop\ObjectModel\Microsoft.VisualStudio.TeamFoundation.Build.dll</HintPath>
+      <HintPath>..\Dependencies\Microsoft.VisualStudio.TeamFoundation.Build.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TeamFoundation.WorkItemTracking">
       <HintPath>..\Dependencies\Microsoft.VisualStudio.TeamFoundation.WorkItemTracking.dll</HintPath>
