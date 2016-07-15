@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Kemmis.MyWorkItemsOnPendingChangesPage.Rafe Kemmis.8043c452-b058-4276-bad3-042e90421c67" Version="1.0.4" Language="en-US" Publisher="Rafe Kemmis" />
+    <Identity Id="Kemmis.MyWorkItemsOnPendingChangesPage.Rafe Kemmis.8043c452-b058-4276-bad3-042e90421c67.Preview" Version="1.0.4" Language="en-US" Publisher="Rafe Kemmis" />
     <DisplayName>My Work Items On Pending Changes Page for Visual Studio 15 Preview 3</DisplayName>
     <Description xml:space="preserve">Displays the most recently changed work items of your choice inside of the Pending Changes page in Team Explorer and allows you to associate with your checkin. This differs from the AssociateRecentWorkItems extension in that you don't have to manually type in a work item number the first time. If you've recently modified (changed the status) of a work item assigned to you, then it will show up for you to use.</Description>
     <MoreInfo>https://github.com/kemmis/Kemmis.MyWorkItemsOnPendingChangesPage</MoreInfo>
@@ -12,7 +12,7 @@
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0]" />
-    <InstallationTarget Version="[15.0,16.0)" Id="Microsoft.VisualStudio.Enterprise" />
+    <InstallationTarget Version="[15.0]" Id="Microsoft.VisualStudio.Enterprise" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.6.1,4.7)" />
