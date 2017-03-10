@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Kemmis.MyWorkItemsOnPendingChangesPage.Rafe Kemmis.8043c452-b058-4276-bad3-042e90421c67" Version="1.0.3" Language="en-US" Publisher="Rafe Kemmis" />
-    <DisplayName>My Work Items On Pending Changes Page for Visual Studio 2015</DisplayName>
+    <Identity Id="Kemmis.MyWorkItemsOnPendingChangesPage.Rafe Kemmis.8043c452-b058-4276-bad3-042e90421c67" Version="1.0.5" Language="en-US" Publisher="Rafe Kemmis" />
+    <DisplayName>My Work Items for VS 2017</DisplayName>
     <Description xml:space="preserve">Displays the most recently changed work items of your choice inside of the Pending Changes page in Team Explorer and allows you to associate with your checkin. This differs from the AssociateRecentWorkItems extension in that you don't have to manually type in a work item number the first time. If you've recently modified (changed the status) of a work item assigned to you, then it will show up for you to use.</Description>
     <MoreInfo>https://github.com/kemmis/Kemmis.MyWorkItemsOnPendingChangesPage</MoreInfo>
     <License>LICENSE.txt</License>
@@ -11,14 +11,19 @@
     <Tags>work item tfs team foundation server</Tags>
   </Metadata>
   <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0]" />
+    <InstallationTarget Version="[15.0]" Id="Microsoft.VisualStudio.Enterprise" />
+    <InstallationTarget Version="[15.0,16.0)" Id="Microsoft.VisualStudio.Pro" />
   </Installation>
   <Dependencies>
-    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-    <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0]" />
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.6.1,4.7)" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.14.0" DisplayName="Visual Studio MPF 14.0" d:Source="Installed" Version="[14.0,15.0]" />
   </Dependencies>
   <Assets>
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
   </Assets>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.Net.Component.4.6.1.TargetingPack" Version="[15.0.26004.1,16.0)" DisplayName=".NET Framework 4.6.1 targeting pack" />
+  </Prerequisites>
 </PackageManifest>
