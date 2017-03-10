@@ -41,3 +41,7 @@ you can simply typ it into the empty box to the right and then click the Add but
 #### Max number of work items to show
 
 This limits the work item list to showing the most recent specified number of work items.
+
+# Building & Debugging
+
+http://stackoverflow.com/questions/9281662/how-to-debug-visual-studio-extensions
