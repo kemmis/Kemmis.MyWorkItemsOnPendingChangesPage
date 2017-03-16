@@ -44,7 +44,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage
         /// <summary>
         /// MyWorkItemsOnPendingChangesPagePackage GUID string.
         /// </summary>
-        public const string PackageGuidString = "dac743aa-2eb2-4832-a7e6-642131b4c76d";
+        public const string PackageGuidString = "dac743aa-2eb2-4832-a7e6-642131b4c77d";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MyWorkItemsOnPendingChangesPagePackage"/> class.
