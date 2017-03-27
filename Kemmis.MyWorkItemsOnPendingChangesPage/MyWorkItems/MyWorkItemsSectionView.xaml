@@ -41,7 +41,7 @@
         </TextBlock>
 
         <ListView ItemsSource="{Binding WorkItems}" BorderThickness="0" Margin="0,6,0,0"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" PreviewMouseWheel="ListView_PreviewMouseWheel"
                   Visibility="{Binding Path=IsConfigured, Converter={StaticResource BoolToVisConverter} }">
             <ListView.View>
                 <GridView>
