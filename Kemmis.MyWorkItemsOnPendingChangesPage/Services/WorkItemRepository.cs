@@ -88,7 +88,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                 {
                     var sinceDate = DateTime.Now.AddDays(-settings.DaysBackToQuery).ToShortDateString();
                     var wis = _context.TeamProjectCollection.GetService<WorkItemStore>();
-                    var states = settings.WorkItemStatuses.Where(w => w.Checked).Select(w=>w.Name).ToArray();
+                    var states = settings.WorkItemStatuses.Where(w => w.Checked).Select(w => w.Name).ToArray();
                     var statesString = "'" + string.Join("','", states) + "'";
                     var types = settings.WorkItemTypes.Where(w => w.Checked).Select(w => w.Name).ToArray();
                     var typesString = "'" + string.Join("','", types) + "'";
@@ -124,8 +124,44 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                             });
                         }
                     }
-                    
+
                 };
+            });
+        }
+
+        public Task GetColumnsAsync(ICollection<SettingItemModel> collection)
+        {
+            return Task.Run(() =>
+            {
+                collection.Add(new SettingItemModel
+                {
+                    Name = "Id",
+                    Checked = true
+                });
+
+                collection.Add(new SettingItemModel
+                {
+                    Name = "Work Item Type",
+                    Checked = true
+                });
+
+                collection.Add(new SettingItemModel
+                {
+                    Name = "Title",
+                    Checked = true
+                });
+
+                collection.Add(new SettingItemModel
+                {
+                    Name = "State",
+                    Checked = false
+                });
+
+                collection.Add(new SettingItemModel
+                {
+                    Name = "Assigned To",
+                    Checked = false
+                });
             });
         }
     }

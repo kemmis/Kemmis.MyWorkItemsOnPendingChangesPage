@@ -23,6 +23,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         private WorkItemRepository _workItemRepository;
         private object _statusesLock = new object();
         private object _typesLock = new object();
+        private object _columnsLock = new object();
 
         public int MaxWorkItems
         {
@@ -34,7 +35,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
                     _maxWorkItems = value;
                     RaisePropertyChanged("MaxWorkItems");
                 }
-                
+
             }
         }
 
@@ -50,6 +51,29 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
                 {
                     _daysBackToQuery = value;
                     RaisePropertyChanged("DaysBackToQuery");
+                }
+            }
+        }
+
+        private SortedObservableRangeCollection<SettingItemModel> _columns;
+
+        public SortedObservableRangeCollection<SettingItemModel> Columns
+        {
+            get
+            {
+                if (_columns == null)
+                {
+                    _columns = new SortedObservableRangeCollection<SettingItemModel>();
+                    BindingOperations.EnableCollectionSynchronization(_columns, _columnsLock);
+                }
+                return _columns;
+            }
+            set
+            {
+                if (_columns != value)
+                {
+                    _columns = value;
+                    RaisePropertyChanged("Columns");
                 }
             }
         }
@@ -175,9 +199,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             var settings = await _settingsRepository.GetSettingsAsync();
             WorkItemTypes.AddRange(settings.WorkItemTypes);
             WorkItemStatuses.AddRange(settings.WorkItemStatuses);
+            Columns.AddRange(settings.Columns);
             DaysBackToQuery = settings.DaysBackToQuery;
             MaxWorkItems = settings.MaxWorkItems;
-            
+
             if (!WorkItemTypes.Any())
             {
                 await LoadTypesFromServer();
@@ -186,6 +211,11 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             if (!WorkItemStatuses.Any())
             {
                 await LoadStatusesFromServer();
+            }
+
+            if (!Columns.Any())
+            {
+                await LoadColumnDefaults();
             }
         }
 
@@ -200,6 +230,13 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         {
             IsBusy = true;
             await _workItemRepository.GetWorkItemStatesAsync(WorkItemStatuses);
+            IsBusy = false;
+        }
+
+        private async Task LoadColumnDefaults()
+        {
+            IsBusy = true;
+            await _workItemRepository.GetColumnsAsync(Columns);
             IsBusy = false;
         }
 
@@ -293,7 +330,8 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
                 DaysBackToQuery = DaysBackToQuery,
                 MaxWorkItems = MaxWorkItems,
                 WorkItemTypes = WorkItemTypes.ToList(),
-                WorkItemStatuses = WorkItemStatuses.ToList()
+                WorkItemStatuses = WorkItemStatuses.ToList(),
+                Columns = Columns.ToList()
             };
 
             _settingsRepository.SaveSettingsAsync(settings);

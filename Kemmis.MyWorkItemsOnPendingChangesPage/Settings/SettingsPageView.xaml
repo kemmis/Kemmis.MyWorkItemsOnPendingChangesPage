@@ -11,7 +11,7 @@
              xmlns:derp="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
 
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="300">
     <UserControl.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -157,6 +157,27 @@
                 <Button Content="Refresh" Command="{Binding RefreshTypesCommand}"></Button>
             </StackPanel>
         </Grid>
+        <Separator Margin="0,5" />
+        <TextBlock Text="Columns to show:"></TextBlock>
+        <ListBox x:Name="ColumnListBox" Height="100" Grid.Column="0" VerticalAlignment="Top"
+                 Margin="0,10,0,0" SelectionMode="Multiple" ItemsSource="{Binding Columns}"
+                 SelectedItem="{Binding SelectedStatus}" ItemContainerStyle="{DynamicResource lbDefaultItemContainerStyle}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:SettingItemModel}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{Binding Checked}" Grid.Column="0" />
+                        <TextBlock Text="{Binding Name}" Grid.Column="1" Margin="5,0,0,0"></TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Separator Margin="0,5" />
         <WrapPanel>
             <TextBlock>Max number of work items to show:</TextBlock>

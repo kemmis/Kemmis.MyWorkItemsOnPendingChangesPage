@@ -6,6 +6,7 @@
              xmlns:models="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Models"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:views="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+             xmlns:myworkitems="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -50,22 +51,46 @@
                             <Setter Property="FrameworkElement.Visibility" Value="Collapsed"/>
                         </Style>
                     </GridView.ColumnHeaderContainerStyle>
-                    <GridViewColumn Width="Auto">
+                    <myworkitems:GridViewColumnExt  Width="Auto" Visibility="{Binding Path=ShowIdColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
                         <GridViewColumnHeader Content="Work Item"/>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Id}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Width="Auto">
+                    </myworkitems:GridViewColumnExt>
+                    <myworkitems:GridViewColumnExt Width="Auto" Visibility="{Binding Path=ShowWITColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                        <GridViewColumnHeader Content="Type"/>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=WorkItemType}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </myworkitems:GridViewColumnExt>
+                    <myworkitems:GridViewColumnExt Width="Auto" Visibility="{Binding Path=ShowTitleColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
                         <GridViewColumnHeader Content="Title"/>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Title}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    </myworkitems:GridViewColumnExt>
+                    <myworkitems:GridViewColumnExt Width="Auto" Visibility="{Binding Path=ShowAssignedToColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                        <GridViewColumnHeader Content="Assigned To"/>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=AssignedTo}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </myworkitems:GridViewColumnExt>
+                    <myworkitems:GridViewColumnExt Width="Auto" Visibility="{Binding Path=ShowStateColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                        <GridViewColumnHeader Content="State"/>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=State}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </myworkitems:GridViewColumnExt>
                 </GridView>
             </ListView.View>
             <ListView.ContextMenu>

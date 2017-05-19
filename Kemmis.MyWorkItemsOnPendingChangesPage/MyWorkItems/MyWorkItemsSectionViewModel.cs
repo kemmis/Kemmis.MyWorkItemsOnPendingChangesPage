@@ -15,6 +15,7 @@ using Microsoft.TeamFoundation.MVVM;
 using Microsoft.TeamFoundation.VersionControl.Controls.Extensibility;
 using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
+using System.Windows.Controls;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 {
@@ -48,6 +49,16 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
         }
 
         public bool NeedsConfigured => !IsConfigured;
+
+        private SettingsModel _settings;
+
+        private SettingsModel Settings => _settings ?? new SettingsModel();
+
+        public bool ShowIdColumn => Settings.Columns.Any(c => c.Checked && c.Name == "Id");
+        public bool ShowWITColumn => Settings.Columns.Any(c => c.Checked && c.Name == "Work Item Type");
+        public bool ShowTitleColumn => Settings.Columns.Any(c => c.Checked && c.Name == "Title");
+        public bool ShowStateColumn => Settings.Columns.Any(c => c.Checked && c.Name == "State");
+        public bool ShowAssignedToColumn => Settings.Columns.Any(c => c.Checked && c.Name == "Assigned To");
 
         public ObservableRangeCollection<WorkItemModel> WorkItems
         {
@@ -105,7 +116,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
         public RelayCommand<WorkItemModel> OpenWorkItemCommand
             => _openWorkItemCommand ?? (_openWorkItemCommand = new RelayCommand<WorkItemModel>(OpenWorkItem));
 
-        
+
 
         public void AddWorkItem(WorkItemModel workItemModel)
         {
@@ -163,13 +174,74 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
         public async Task LoadWorkItems()
         {
             IsBusy = true;
-            var settings = await _settingsRepository.GetSettingsAsync();
-            if (settings.WorkItemStatuses.Any(s => s.Checked) && settings.WorkItemTypes.Any(s => s.Checked))
+
+            _settings = await _settingsRepository.GetSettingsAsync();
+
+            if (_settings.WorkItemStatuses.Any(s => s.Checked) && _settings.WorkItemTypes.Any(s => s.Checked))
             {
                 IsConfigured = true;
-                await _workItemRepository.GetWorkItemsAsync(WorkItems, settings);
+                await _workItemRepository.GetWorkItemsAsync(WorkItems, _settings);
             }
+
+            if (!_settings.Columns.Any())
+            {
+                await _workItemRepository.GetColumnsAsync(_settings.Columns);
+            }
+
+            RaisePropertyChanged("ShowIdColumn");
+            RaisePropertyChanged("ShowWITColumn");
+            RaisePropertyChanged("ShowTitleColumn");
+            RaisePropertyChanged("ShowStateColumn");
+            RaisePropertyChanged("ShowAssignedToColumn");
+
             IsBusy = false;
         }
+    }
+
+    public class GridViewColumnExt : GridViewColumn
+    {
+        public Visibility Visibility
+        {
+            get
+            {
+                return (Visibility)GetValue(VisibilityProperty);
+            }
+            set
+            {
+                SetValue(VisibilityProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty VisibilityProperty =
+            DependencyProperty.Register("Visibility", typeof(Visibility),
+                typeof(GridViewColumnExt),
+                new FrameworkPropertyMetadata(Visibility.Visible,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnVisibilityPropertyChanged)));
+
+        private static void OnVisibilityPropertyChanged(DependencyObject d,
+            DependencyPropertyChangedEventArgs e)
+        {
+            var column = d as GridViewColumnExt;
+            if (column != null)
+            {
+                column.OnVisibilityChanged((Visibility)e.NewValue);
+            }
+        }
+
+        private void OnVisibilityChanged(Visibility visibility)
+        {
+            if (visibility == Visibility.Visible)
+            {
+                Width = _visibleWidth;
+            }
+            else
+            {
+                _visibleWidth = Width;
+                Width = 0.0;
+            }
+        }
+
+        double _visibleWidth;
     }
 }
