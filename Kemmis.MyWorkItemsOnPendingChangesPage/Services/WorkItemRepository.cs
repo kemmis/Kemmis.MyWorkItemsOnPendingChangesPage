@@ -50,33 +50,24 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
              {
                  if (_context != null && _context.HasCollection && _context.HasTeamProject)
                  {
-                     var twoWeeksAgo = DateTime.Now.AddDays(-14).ToShortDateString();
                      var wis = _context.TeamProjectCollection.GetService<WorkItemStore>();
-                     var queryText =
-                         $@"Select [State], [Title]
-                        From WorkItems where
-                        [Changed Date] > '{twoWeeksAgo}'";
 
-                     var workItems = wis.Query(queryText);
+                     var types = new List<string>();
 
-                     foreach (WorkItem w in workItems)
+                     foreach (Project p in wis.Projects)
                      {
-                         if (collection.All(s => s.Name != w.State))
+                         foreach (WorkItemType t in p.WorkItemTypes)
                          {
-                             collection.Add(new SettingItemModel { Name = w.State });
-                         }
-
-                         foreach (Revision rev in w.Revisions)
-                         {
-                             var state = rev.Fields["State"].Value as string;
-
-                             if (collection.All(s => s.Name != state))
+                             foreach (string stateValue in t.FieldDefinitions["State"].AllowedValues)
                              {
-                                 collection.Add(new SettingItemModel { Name = state });
+                                 if (collection.All(s => s.Name != stateValue))
+                                 {
+                                     collection.Add(new SettingItemModel { Name = stateValue });
+                                 }
                              }
                          }
                      }
-                 };
+                 }
              });
         }
 
