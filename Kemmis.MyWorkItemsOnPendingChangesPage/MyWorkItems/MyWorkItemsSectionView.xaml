@@ -164,7 +164,7 @@
                     <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"/>
                     <Setter Property="ToolTip">
                         <Setter.Value>
-                            <Grid>
+                            <Grid Width="250">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -177,11 +177,16 @@
                                 </Grid.ColumnDefinitions>
 
 
-                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,6,3" Text="{Binding Path=Title}" FontWeight="Bold"/>
-                                <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,3" Text="{Binding Path=WorkItemType}"/>
+                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,6,10" 
+                                           TextWrapping="Wrap"
+                                           Text="{Binding Path=IdAndTitle}" 
+                                           FontWeight="Bold" FontSize="12"/>
 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,10,6,3" Text="State"/>
-                                <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,10,0,3" Text="{Binding Path=State}"  FontWeight="DemiBold"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,6,3" Text="Type"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,0,0,3" Text="{Binding Path=WorkItemType}"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,6,3" Text="State"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,0,0,3" Text="{Binding Path=State}"  FontWeight="DemiBold"/>
 
                                 <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,0,6,3" Text="Assigned To" />
                                 <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,0,0,3" Text="{Binding Path=AssignedTo}"  FontWeight="DemiBold"/>

@@ -13,5 +13,6 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Models
         public string WorkItemType { get; set; }
         public string State { get; set; }
         public string AssignedTo { get; set; }
+        public string IdAndTitle => Id + " - " + Title;
     }
 }
