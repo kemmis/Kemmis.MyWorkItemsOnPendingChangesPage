@@ -39,6 +39,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(MyWorkItemsOnPendingChangesPagePackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
+    [ProvideBindingPath]
     public sealed class MyWorkItemsOnPendingChangesPagePackage : Package
     {
         /// <summary>

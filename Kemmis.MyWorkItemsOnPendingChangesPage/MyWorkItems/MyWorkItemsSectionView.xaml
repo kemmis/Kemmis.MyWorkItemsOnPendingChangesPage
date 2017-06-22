@@ -7,6 +7,7 @@
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:views="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:myworkitems="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -41,8 +42,10 @@
             You must <Hyperlink Command="{Binding NavSettingsCommand}">configure your settings</Hyperlink> before the extension can display your work items.
         </TextBlock>
 
-        <ListView ItemsSource="{Binding WorkItems}" BorderThickness="0" Margin="0,6,0,0"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" PreviewMouseWheel="ListView_PreviewMouseWheel"
+        <ListView ItemsSource="{Binding WorkItems}" BorderThickness="0" Margin="0,6,10,0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+                  ScrollViewer.CanContentScroll="False"
+                  PreviewMouseWheel="ListView_PreviewMouseWheel"
                   Visibility="{Binding Path=IsConfigured, Converter={StaticResource BoolToVisConverter} }">
             <ListView.View>
                 <GridView>
@@ -51,6 +54,31 @@
                             <Setter Property="FrameworkElement.Visibility" Value="Collapsed"/>
                         </Style>
                     </GridView.ColumnHeaderContainerStyle>
+                    <myworkitems:GridViewColumnExt  Width="Auto" Visibility="Visible">
+                        <GridViewColumnHeader Content="*" Width="10"/>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="0,0,-6,0">
+                                    <TextBlock.Resources>
+                                        <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
+                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"/>
+                                            <Setter Property="TextDecorations" Value="None"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Resources>
+                                    <Hyperlink ToolTip="Add (Associate With Check In)" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddWorkItemCommand}"
+                                               CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewRowPresenter}}, Path=DataContext}">
+                                        <fa:FontAwesome Icon="Plus"></fa:FontAwesome>
+                                    </Hyperlink>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </myworkitems:GridViewColumnExt>
+
                     <myworkitems:GridViewColumnExt  Width="Auto" Visibility="{Binding Path=ShowIdColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
                         <GridViewColumnHeader Content="Work Item"/>
                         <GridViewColumn.CellTemplate>
@@ -67,11 +95,11 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </myworkitems:GridViewColumnExt>
-                    <myworkitems:GridViewColumnExt Width="Auto" Visibility="{Binding Path=ShowTitleColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                    <myworkitems:GridViewColumnExt Width="240" Visibility="{Binding Path=ShowTitleColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
                         <GridViewColumnHeader Content="Title"/>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Title}"/>
+                                <TextBlock Text="{Binding Path=Title}" TextTrimming="CharacterEllipsis" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </myworkitems:GridViewColumnExt>
