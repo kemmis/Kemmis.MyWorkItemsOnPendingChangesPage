@@ -8,6 +8,7 @@
              xmlns:views="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:myworkitems="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:acb="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -72,7 +73,7 @@
                                     </TextBlock.Resources>
                                     <Hyperlink ToolTip="Add (Associate With Check In)" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddWorkItemCommand}"
                                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewRowPresenter}}, Path=DataContext}">
-                                        <fa:FontAwesome Icon="Plus"></fa:FontAwesome>
+                                        <fa:FontAwesome Icon="PlusCircle" FontSize="14"></fa:FontAwesome>
                                     </Hyperlink>
                                 </TextBlock>
                             </DataTemplate>
@@ -91,7 +92,8 @@
                         <GridViewColumnHeader Content="Type"/>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=WorkItemType}"/>
+                                <TextBlock Text="{Binding Path=WorkItemType}">
+                                </TextBlock>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </myworkitems:GridViewColumnExt>
@@ -122,17 +124,21 @@
                 </GridView>
             </ListView.View>
             <ListView.ContextMenu>
-                <ContextMenu Name="RecentWorkItemsMenu">
+                <ContextMenu Padding="5">
                     <MenuItem Header="Add" Name="Add" Command="{Binding AddWorkItemCommand}" 
                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}">
                         <MenuItem.Icon>
-                            <Image Source="../Images/Add.png" Width="16" Height="16" />
+                            <fa:ImageAwesome Icon="PlusCircle" 
+                                             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"
+                                             Height="14" Width="14"></fa:ImageAwesome>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Open" Name="Open" Command="{Binding OpenWorkItemCommand}"
                                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}">
                         <MenuItem.Icon>
-                            <Image Source="../Images/Open.png" Width="16" Height="16" />
+                            <fa:ImageAwesome Icon="ExternalLink" 
+                                             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"
+                                             Height="14" Width="14"></fa:ImageAwesome>
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
@@ -176,7 +182,6 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-
                                 <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,6,10" 
                                            TextWrapping="Wrap"
                                            Text="{Binding Path=IdAndTitle}" 
@@ -194,6 +199,12 @@
                             </Grid>
                         </Setter.Value>
                     </Setter>
+                    <Setter Property="acb:CommandBehavior.Event"
+                            Value="MouseDoubleClick" />
+                    <Setter Property="acb:CommandBehavior.Command"
+                            Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddWorkItemCommand}" />
+                    <Setter Property="acb:CommandBehavior.CommandParameter"
+                            Value="{Binding}" />
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
