@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -9,11 +10,26 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
     /// </summary>
     public partial class MyWorkItemsSectionView : UserControl
     {
+        private MyWorkItemsSectionViewModel _viewModel;
+
         public MyWorkItemsSectionView()
         {
             InitializeComponent();
+            DataContextChanged += MyWorkItemsSectionView_DataContextChanged;
+            Loaded += MyWorkItemsSectionView_Loaded;
         }
 
+        private void MyWorkItemsSectionView_Loaded(object sender, RoutedEventArgs e)
+        {
+            _viewModel.OnViewLoadedCommand.Execute(null);
+        }
+
+        private void MyWorkItemsSectionView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            _viewModel = e.NewValue as MyWorkItemsSectionViewModel;
+        }
+
+        
         private void ListView_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             if (!e.Handled)

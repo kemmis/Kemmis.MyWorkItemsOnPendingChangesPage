@@ -12,19 +12,18 @@ using Newtonsoft.Json;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
 {
-    public class SettingsRepository
+    internal class SettingsRepository : MyWorkItemsServiceBase
     {
-        public const string CollectionPath = "MyWorkItemsOnPendingChangesPage";
-        public const string PropertyName = "AllSettings";
+        private const string CollectionPath = "MyWorkItemsOnPendingChangesPage";
+        private const string ClassicPropertyName = "AllSettings";
 
-        private readonly IServiceProvider _vsServiceProvider;
+        private string PropertyName => Context.TeamProjectCollection.Name;
+
         private readonly WritableSettingsStore _writableSettingsStore;
 
-
-        public SettingsRepository(IServiceProvider vsServiceProvider)
+        public SettingsRepository(IServiceProvider serviceProvider) : base(serviceProvider)
         {
-            _vsServiceProvider = vsServiceProvider;
-            var ssm = new ShellSettingsManager(_vsServiceProvider);
+            var ssm = new ShellSettingsManager(serviceProvider);
             _writableSettingsStore = ssm.GetWritableSettingsStore(SettingsScope.UserSettings);
         }
 
@@ -34,10 +33,12 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             {
                 try
                 {
-                    if (_writableSettingsStore.PropertyExists(CollectionPath, PropertyName))
+                    // migrate classic storage to newer TeamProjectCollection-based storage
+                    if (_writableSettingsStore.PropertyExists(CollectionPath, ClassicPropertyName))
                     {
-                        var settingsString = _writableSettingsStore.GetString(CollectionPath, PropertyName);
-                        return JsonConvert.DeserializeObject<SettingsModel>(settingsString);
+                        var settingsString = _writableSettingsStore.GetString(CollectionPath, ClassicPropertyName);
+                        SaveSetingsString(settingsString);
+                        _writableSettingsStore.DeleteProperty(CollectionPath, ClassicPropertyName);
                     }
                 }
                 catch (Exception ex)
@@ -45,15 +46,43 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                     Debug.Fail(ex.Message);
                 }
 
-                return new SettingsModel()
-                {
-                    WorkItemTypes = new List<SettingItemModel>(),
-                    WorkItemStatuses = new List<SettingItemModel>(),
-                    Columns = new List<SettingItemModel>(),
-                    DaysBackToQuery = 10,
-                    MaxWorkItems = 8
-                };
+                return GetSettingsModel();
             });
+        }
+
+        private void SaveSetingsString(string settingsString)
+        {
+            try
+            {
+                if (!_writableSettingsStore.CollectionExists(CollectionPath))
+                {
+                    _writableSettingsStore.CreateCollection(CollectionPath);
+                }
+
+                _writableSettingsStore.SetString(CollectionPath, PropertyName, settingsString);
+            }
+            catch (Exception ex)
+            {
+                Debug.Fail(ex.Message);
+            }
+        }
+
+        private SettingsModel GetSettingsModel()
+        {
+            if (_writableSettingsStore.PropertyExists(CollectionPath, PropertyName))
+            {
+                var settingsString = _writableSettingsStore.GetString(CollectionPath, PropertyName);
+                return JsonConvert.DeserializeObject<SettingsModel>(settingsString);
+            }
+
+            return new SettingsModel()
+            {
+                WorkItemTypes = new List<SettingItemModel>(),
+                WorkItemStatuses = new List<SettingItemModel>(),
+                Columns = new List<SettingItemModel>(),
+                DaysBackToQuery = 10,
+                MaxWorkItems = 8
+            };
         }
 
         public Task<SettingsModel> SaveSettingsAsync(SettingsModel settingsModel)
@@ -76,17 +105,6 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                 }
                 return settingsModel;
             });
-        }
-        
-        public T GetService<T>()
-        {
-           
-            if (this._vsServiceProvider != null)
-            {
-                return (T)this._vsServiceProvider.GetService(typeof(T));
-            }
-
-            return default(T);
         }
     }
 }

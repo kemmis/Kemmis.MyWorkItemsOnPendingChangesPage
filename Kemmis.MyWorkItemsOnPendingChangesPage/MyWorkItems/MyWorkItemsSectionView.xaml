@@ -9,7 +9,9 @@
              xmlns:myworkitems="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:acb="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
+             xmlns:mvvm="clr-namespace:Microsoft.TeamFoundation.MVVM;assembly=Microsoft.TeamFoundation.Controls"
              mc:Ignorable="d" 
+             mvvm:MVVMSupport.ViewModel="{Binding}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"></BooleanToVisibilityConverter>

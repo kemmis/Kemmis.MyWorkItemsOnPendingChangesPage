@@ -16,18 +16,20 @@ using Microsoft.TeamFoundation.VersionControl.Controls.Extensibility;
 using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
 using System.Windows.Controls;
+using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 {
-    [TeamExplorerSection(SectionId, TeamExplorerPageIds.PendingChanges, 35)]
-    public class MyWorkItemsSectionViewModel : TeamExplorerBaseSection
+    internal class MyWorkItemsSectionViewModel : TeamExplorerSectionViewModelBase
     {
         private RelayCommand _navSettingsCommand;
         private AsyncRelayCommand _refreshCommand;
+        private AsyncRelayCommand _onLoadedCommand;
         private RelayCommand<WorkItemModel> _addWorkItemCommand;
         private RelayCommand<WorkItemModel> _openWorkItemCommand;
 
-        public const string SectionId = "4C82595C-9E77-467E-9F25-D886E694C361";
+
         private SettingsRepository _settingsRepository;
         private WorkItemRepository _workItemRepository;
         private ObservableRangeCollection<WorkItemModel> _workItems;
@@ -91,18 +93,24 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
         public override void Initialize(object sender, SectionInitializeEventArgs e)
         {
             base.Initialize(sender, e);
-            _settingsRepository = new SettingsRepository(e.ServiceProvider);
-            _workItemRepository = new WorkItemRepository(CurrentContext);
-            var view = new MyWorkItemsSectionView();
-            SectionContent = view;
-            view.DataContext = this;
-            view.Loaded += ViewOnLoaded;
+
+
+            // need to get ITeamFoundationContextManager
+            //var view = new MyWorkItemsSectionView();
+            //SectionContent = view; // how to init with mvvm?
+            //view.DataContext = this;
+            //view.Loaded += ViewOnLoaded;
         }
 
-        private async void ViewOnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        public async Task ViewOnLoaded()
         {
+            _settingsRepository = new SettingsRepository(ServiceProvider);
+            _workItemRepository = new WorkItemRepository(ServiceProvider);
             await LoadWorkItems();
         }
+
+        public AsyncRelayCommand OnViewLoadedCommand
+            => _onLoadedCommand ?? (_onLoadedCommand = new AsyncRelayCommand(ViewOnLoaded));
 
         public RelayCommand NavSettingsCommand
             => _navSettingsCommand ?? (_navSettingsCommand = new RelayCommand(NavigateToSettingsPage));
@@ -118,7 +126,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 
 
 
-        public void AddWorkItem(WorkItemModel workItemModel)
+        public virtual void AddWorkItem(WorkItemModel workItemModel)
         {
             try
             {
@@ -127,7 +135,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 
                 int selectedWorkItemId = workItemModel.Id;
 
-                var pc = GetService<IPendingChangesExt>();
+                var pc = ResolveService<IPendingChangesExt>();
                 var model = pc.GetType().GetField("m_workItemsSection", BindingFlags.NonPublic | BindingFlags.Instance);
                 var t = model.FieldType;
                 var mm = model.GetValue(pc);
@@ -150,8 +158,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
             IWorkItemDocument widoc = null;
             try
             {
-                var documentService = GetService<DocumentService>();
-                widoc = documentService.GetWorkItem(CurrentContext.TeamProjectCollection, selectedWorkItemId, this);
+                var documentService = ResolveService<DocumentService>();
+                var manager = ResolveService<ITeamFoundationContextManager>();
+
+                widoc = documentService.GetWorkItem(manager.CurrentContext.TeamProjectCollection, selectedWorkItemId, this);
                 documentService.ShowWorkItem(widoc);
             }
             finally
@@ -164,7 +174,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
         public void NavigateToSettingsPage()
         {
             // Navigate to the settings page
-            var teamExplorer = GetService<ITeamExplorer>();
+            var teamExplorer = ResolveService<ITeamExplorer>();
             if (teamExplorer != null)
             {
                 teamExplorer.NavigateToPage(new Guid(SettingsPageViewModel.PageId), null);
@@ -195,6 +205,21 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
             RaisePropertyChanged("ShowAssignedToColumn");
 
             IsBusy = false;
+        }
+
+        public TService ResolveService<TService>() where TService : class
+        {
+            return GetService<TService>() ?? base.ResolveService<TService>();
+        }
+
+        private T GetService<T>()
+        {
+
+            if (ServiceProvider != null)
+            {
+                return (T)this.ServiceProvider.GetService(typeof(T));
+            }
+            return default(T);
         }
     }
 
@@ -244,4 +269,5 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 
         double _visibleWidth;
     }
+
 }

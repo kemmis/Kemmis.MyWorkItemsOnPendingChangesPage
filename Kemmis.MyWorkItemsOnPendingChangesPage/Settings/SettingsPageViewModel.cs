@@ -182,7 +182,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         {
             base.Initialize(sender, e);
             _settingsRepository = new SettingsRepository(e.ServiceProvider);
-            _workItemRepository = new WorkItemRepository(CurrentContext);
+            _workItemRepository = new WorkItemRepository(e.ServiceProvider);
             var view = new SettingsPageView();
             PageContent = view;
             view.DataContext = this;

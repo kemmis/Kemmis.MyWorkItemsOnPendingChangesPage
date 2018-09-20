@@ -12,24 +12,20 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
 {
-    public class WorkItemRepository
+    internal class WorkItemRepository : MyWorkItemsServiceBase
     {
-        private readonly ITeamFoundationContext _context;
-        public WorkItemRepository(ITeamFoundationContext context)
+        public WorkItemRepository(IServiceProvider serviceProvider) : base(serviceProvider)
         {
-            _context = context;
         }
-
+        
         public Task GetWorkItemTypesAsync(ObservableCollection<SettingItemModel> collection)
         {
             return Task.Run(() =>
             {
-                if (_context != null && _context.HasCollection && _context.HasTeamProject)
+                if (Context != null && Context.HasCollection && Context.HasTeamProject)
                 {
-                    var wis = _context.TeamProjectCollection.GetService<WorkItemStore>();
-
-                    var types = new List<string>();
-
+                    var wis = Context.TeamProjectCollection.GetService<WorkItemStore>();
+                    
                     foreach (Project p in wis.Projects)
                     {
                         foreach (WorkItemType t in p.WorkItemTypes)
@@ -48,12 +44,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
         {
             return Task.Run(() =>
              {
-                 if (_context != null && _context.HasCollection && _context.HasTeamProject)
+                 if (Context != null && Context.HasCollection && Context.HasTeamProject)
                  {
-                     var wis = _context.TeamProjectCollection.GetService<WorkItemStore>();
-
-                     var types = new List<string>();
-
+                     var wis = Context.TeamProjectCollection.GetService<WorkItemStore>();
+                     
                      foreach (Project p in wis.Projects)
                      {
                          foreach (WorkItemType t in p.WorkItemTypes)
@@ -75,10 +69,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
         {
             return Task.Run(() =>
             {
-                if (_context != null && _context.HasCollection && _context.HasTeamProject)
+                if (Context != null && Context.HasCollection && Context.HasTeamProject)
                 {
                     var sinceDate = DateTime.Now.AddDays(-settings.DaysBackToQuery).ToShortDateString();
-                    var wis = _context.TeamProjectCollection.GetService<WorkItemStore>();
+                    var wis = Context.TeamProjectCollection.GetService<WorkItemStore>();
                     var states = settings.WorkItemStatuses.Where(w => w.Checked).Select(w => w.Name).ToArray();
                     var statesString = "'" + string.Join("','", states) + "'";
                     var types = settings.WorkItemTypes.Where(w => w.Checked).Select(w => w.Name).ToArray();
