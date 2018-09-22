@@ -3,42 +3,50 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using GalaSoft.MvvmLight.Command;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common;
-using Kemmis.MyWorkItemsOnPendingChangesPage.Common.ViewModelBaseClasses;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Models;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Services;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Settings;
+using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.Controls;
+using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 using Microsoft.TeamFoundation.MVVM;
 using Microsoft.TeamFoundation.VersionControl.Controls.Extensibility;
-using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 using Microsoft.VisualStudio.TeamFoundation.WorkItemTracking;
-using System.Windows.Controls;
-using Microsoft.TeamFoundation.Client;
-using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
+using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 {
     internal class MyWorkItemsSectionViewModel : TeamExplorerSectionViewModelBase
     {
-        private RelayCommand _navSettingsCommand;
-        private AsyncRelayCommand _refreshCommand;
-        private AsyncRelayCommand _onLoadedCommand;
         private RelayCommand<WorkItemModel> _addWorkItemCommand;
+        private bool _isConfigured;
+        private RelayCommand _navSettingsCommand;
+        private AsyncRelayCommand _onLoadedCommand;
         private RelayCommand<WorkItemModel> _openWorkItemCommand;
+        private AsyncRelayCommand _refreshCommand;
+
+        private SettingsModel _settings;
 
 
         private SettingsRepository _settingsRepository;
         private WorkItemRepository _workItemRepository;
         private ObservableRangeCollection<WorkItemModel> _workItems;
-        private object _workItemsLock = new object();
-        private bool _isConfigured;
+        private readonly object _workItemsLock = new object();
+
+        public MyWorkItemsSectionViewModel()
+        {
+            Title = "My Work Items";
+            IsExpanded = true;
+            IsBusy = false;
+        }
 
         public bool IsConfigured
         {
-            get { return _isConfigured; }
+            get => _isConfigured;
             set
             {
                 if (_isConfigured != value)
@@ -51,8 +59,6 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
         }
 
         public bool NeedsConfigured => !IsConfigured;
-
-        private SettingsModel _settings;
 
         private SettingsModel Settings => _settings ?? new SettingsModel();
 
@@ -71,6 +77,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
                     _workItems = new ObservableRangeCollection<WorkItemModel>();
                     BindingOperations.EnableCollectionSynchronization(_workItems, _workItemsLock);
                 }
+
                 return _workItems;
             }
             set
@@ -83,12 +90,20 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
             }
         }
 
-        public MyWorkItemsSectionViewModel()
-        {
-            Title = "My Work Items";
-            IsExpanded = true;
-            IsBusy = false;
-        }
+        public AsyncRelayCommand OnViewLoadedCommand
+            => _onLoadedCommand ?? (_onLoadedCommand = new AsyncRelayCommand(ViewOnLoaded));
+
+        public RelayCommand NavSettingsCommand
+            => _navSettingsCommand ?? (_navSettingsCommand = new RelayCommand(NavigateToSettingsPage));
+
+        public AsyncRelayCommand RefreshCommand
+            => _refreshCommand ?? (_refreshCommand = new AsyncRelayCommand(LoadWorkItems));
+
+        public RelayCommand<WorkItemModel> AddWorkItemCommand
+            => _addWorkItemCommand ?? (_addWorkItemCommand = new RelayCommand<WorkItemModel>(AddWorkItem));
+
+        public RelayCommand<WorkItemModel> OpenWorkItemCommand
+            => _openWorkItemCommand ?? (_openWorkItemCommand = new RelayCommand<WorkItemModel>(OpenWorkItem));
 
         public override void Initialize(object sender, SectionInitializeEventArgs e)
         {
@@ -109,22 +124,6 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
             await LoadWorkItems();
         }
 
-        public AsyncRelayCommand OnViewLoadedCommand
-            => _onLoadedCommand ?? (_onLoadedCommand = new AsyncRelayCommand(ViewOnLoaded));
-
-        public RelayCommand NavSettingsCommand
-            => _navSettingsCommand ?? (_navSettingsCommand = new RelayCommand(NavigateToSettingsPage));
-
-        public AsyncRelayCommand RefreshCommand
-            => _refreshCommand ?? (_refreshCommand = new AsyncRelayCommand(LoadWorkItems));
-
-        public RelayCommand<WorkItemModel> AddWorkItemCommand
-            => _addWorkItemCommand ?? (_addWorkItemCommand = new RelayCommand<WorkItemModel>(AddWorkItem));
-
-        public RelayCommand<WorkItemModel> OpenWorkItemCommand
-            => _openWorkItemCommand ?? (_openWorkItemCommand = new RelayCommand<WorkItemModel>(OpenWorkItem));
-
-
 
         public virtual void AddWorkItem(WorkItemModel workItemModel)
         {
@@ -133,14 +132,14 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
                 if (workItemModel == null)
                     return;
 
-                int selectedWorkItemId = workItemModel.Id;
+                var selectedWorkItemId = workItemModel.Id;
 
                 var pc = ResolveService<IPendingChangesExt>();
                 var model = pc.GetType().GetField("m_workItemsSection", BindingFlags.NonPublic | BindingFlags.Instance);
                 var t = model.FieldType;
                 var mm = model.GetValue(pc);
                 var m = t.GetMethod("AddWorkItemById", BindingFlags.NonPublic | BindingFlags.Instance);
-                m.Invoke(mm, new object[] { selectedWorkItemId });
+                m.Invoke(mm, new object[] {selectedWorkItemId});
             }
             catch (Exception ex)
             {
@@ -153,7 +152,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
             if (workItemModel == null)
                 return;
 
-            int selectedWorkItemId = workItemModel.Id;
+            var selectedWorkItemId = workItemModel.Id;
 
             IWorkItemDocument widoc = null;
             try
@@ -161,7 +160,8 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
                 var documentService = ResolveService<DocumentService>();
                 var manager = ResolveService<ITeamFoundationContextManager>();
 
-                widoc = documentService.GetWorkItem(manager.CurrentContext.TeamProjectCollection, selectedWorkItemId, this);
+                widoc = documentService.GetWorkItem(manager.CurrentContext.TeamProjectCollection, selectedWorkItemId,
+                    this);
                 documentService.ShowWorkItem(widoc);
             }
             finally
@@ -175,10 +175,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
         {
             // Navigate to the settings page
             var teamExplorer = ResolveService<ITeamExplorer>();
-            if (teamExplorer != null)
-            {
-                teamExplorer.NavigateToPage(new Guid(SettingsPageViewModel.PageId), null);
-            }
+            if (teamExplorer != null) teamExplorer.NavigateToPage(new Guid(SettingsPageViewModel.PageId), null);
         }
 
         public async Task LoadWorkItems()
@@ -193,10 +190,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
                 await _workItemRepository.GetWorkItemsAsync(WorkItems, _settings);
             }
 
-            if (!_settings.Columns.Any())
-            {
-                await _workItemRepository.GetColumnsAsync(_settings.Columns);
-            }
+            if (!_settings.Columns.Any()) await _workItemRepository.GetColumnsAsync(_settings.Columns);
 
             RaisePropertyChanged("ShowIdColumn");
             RaisePropertyChanged("ShowWITColumn");
@@ -214,44 +208,33 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 
         private T GetService<T>()
         {
-
-            if (ServiceProvider != null)
-            {
-                return (T)this.ServiceProvider.GetService(typeof(T));
-            }
+            if (ServiceProvider != null) return (T) ServiceProvider.GetService(typeof(T));
             return default(T);
         }
     }
 
     public class GridViewColumnExt : GridViewColumn
     {
-        public Visibility Visibility
-        {
-            get
-            {
-                return (Visibility)GetValue(VisibilityProperty);
-            }
-            set
-            {
-                SetValue(VisibilityProperty, value);
-            }
-        }
-
         public static readonly DependencyProperty VisibilityProperty =
             DependencyProperty.Register("Visibility", typeof(Visibility),
                 typeof(GridViewColumnExt),
                 new FrameworkPropertyMetadata(Visibility.Visible,
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    new PropertyChangedCallback(OnVisibilityPropertyChanged)));
+                    OnVisibilityPropertyChanged));
+
+        private double _visibleWidth;
+
+        public Visibility Visibility
+        {
+            get => (Visibility) GetValue(VisibilityProperty);
+            set => SetValue(VisibilityProperty, value);
+        }
 
         private static void OnVisibilityPropertyChanged(DependencyObject d,
             DependencyPropertyChangedEventArgs e)
         {
             var column = d as GridViewColumnExt;
-            if (column != null)
-            {
-                column.OnVisibilityChanged((Visibility)e.NewValue);
-            }
+            if (column != null) column.OnVisibilityChanged((Visibility) e.NewValue);
         }
 
         private void OnVisibilityChanged(Visibility visibility)
@@ -266,8 +249,5 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
                 Width = 0.0;
             }
         }
-
-        double _visibleWidth;
     }
-
 }

@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems.MyWorkItemsSectionView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:models="clr-namespace:Kemmis.MyWorkItemsOnPendingChangesPage.Models"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
@@ -10,43 +10,46 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:acb="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior"
              xmlns:mvvm="clr-namespace:Microsoft.TeamFoundation.MVVM;assembly=Microsoft.TeamFoundation.Controls"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              mvvm:MVVMSupport.ViewModel="{Binding}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisConverter"></BooleanToVisibilityConverter>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
         <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"/>
-            <Setter Property="TextDecorations" Value="None"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}" />
+            <Setter Property="TextDecorations" Value="None" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"/>
-                    <Setter Property="TextDecorations" Value="Underline"/>
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}" />
+                    <Setter Property="TextDecorations" Value="Underline" />
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="True">
-                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="Cursor" Value="Hand" />
                 </Trigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
 
     <StackPanel>
-        <WrapPanel Margin="6,0,0,0" Visibility="{Binding Path=IsConfigured, Converter={StaticResource BoolToVisConverter} }">
+        <WrapPanel Margin="6,0,0,0"
+                   Visibility="{Binding Path=IsConfigured, Converter={StaticResource BoolToVisConverter} }">
             <TextBlock>
                 <Hyperlink x:Name="RefreshLink" Command="{Binding RefreshCommand}">Refresh</Hyperlink> |
                 <Hyperlink x:Name="SettingsLink" Command="{Binding NavSettingsCommand}">Settings</Hyperlink>
             </TextBlock>
         </WrapPanel>
 
-        <TextBlock TextWrapping="Wrap" Margin="6" Visibility="{Binding Path=NeedsConfigured, Converter={StaticResource BoolToVisConverter} }"> 
+        <TextBlock TextWrapping="Wrap" Margin="6"
+                   Visibility="{Binding Path=NeedsConfigured, Converter={StaticResource BoolToVisConverter} }">
             You must <Hyperlink Command="{Binding NavSettingsCommand}">configure your settings</Hyperlink> before the extension can display your work items.
         </TextBlock>
 
         <ListView ItemsSource="{Binding WorkItems}" BorderThickness="0" Margin="0,6,10,0"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                   ScrollViewer.CanContentScroll="False"
                   PreviewMouseWheel="ListView_PreviewMouseWheel"
                   Visibility="{Binding Path=IsConfigured, Converter={StaticResource BoolToVisConverter} }">
@@ -54,72 +57,79 @@
                 <GridView>
                     <GridView.ColumnHeaderContainerStyle>
                         <Style>
-                            <Setter Property="FrameworkElement.Visibility" Value="Collapsed"/>
+                            <Setter Property="FrameworkElement.Visibility" Value="Collapsed" />
                         </Style>
                     </GridView.ColumnHeaderContainerStyle>
-                    <myworkitems:GridViewColumnExt  Width="Auto" Visibility="Visible">
-                        <GridViewColumnHeader Content="*" Width="10"/>
+                    <myworkitems:GridViewColumnExt Width="Auto" Visibility="Visible">
+                        <GridViewColumnHeader Content="*" Width="10" />
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Margin="0,0,-6,0">
                                     <TextBlock.Resources>
                                         <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
-                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"/>
-                                            <Setter Property="TextDecorations" Value="None"/>
+                                            <Setter Property="Foreground"
+                                                    Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}" />
+                                            <Setter Property="TextDecorations" Value="None" />
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"/>
+                                                    <Setter Property="Foreground"
+                                                            Value="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}" />
                                                 </Trigger>
                                             </Style.Triggers>
                                         </Style>
                                     </TextBlock.Resources>
-                                    <Hyperlink ToolTip="Add (Associate With Check In)" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddWorkItemCommand}"
+                                    <Hyperlink ToolTip="Add (Associate With Check In)"
+                                               Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}, Path=DataContext.AddWorkItemCommand}"
                                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewRowPresenter}}, Path=DataContext}">
-                                        <fa:FontAwesome Icon="PlusCircle" FontSize="14"></fa:FontAwesome>
+                                        <fa:FontAwesome Icon="PlusCircle" FontSize="14" />
                                     </Hyperlink>
                                 </TextBlock>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </myworkitems:GridViewColumnExt>
 
-                    <myworkitems:GridViewColumnExt  Width="Auto" Visibility="{Binding Path=ShowIdColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
-                        <GridViewColumnHeader Content="Work Item"/>
+                    <myworkitems:GridViewColumnExt Width="Auto"
+                                                   Visibility="{Binding Path=ShowIdColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                        <GridViewColumnHeader Content="Work Item" />
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Id}"/>
+                                <TextBlock Text="{Binding Path=Id}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </myworkitems:GridViewColumnExt>
-                    <myworkitems:GridViewColumnExt Width="Auto" Visibility="{Binding Path=ShowWITColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
-                        <GridViewColumnHeader Content="Type"/>
+                    <myworkitems:GridViewColumnExt Width="Auto"
+                                                   Visibility="{Binding Path=ShowWITColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                        <GridViewColumnHeader Content="Type" />
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=WorkItemType}">
-                                </TextBlock>
+                                <TextBlock Text="{Binding Path=WorkItemType}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </myworkitems:GridViewColumnExt>
-                    <myworkitems:GridViewColumnExt Width="240" Visibility="{Binding Path=ShowTitleColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
-                        <GridViewColumnHeader Content="Title"/>
+                    <myworkitems:GridViewColumnExt Width="240"
+                                                   Visibility="{Binding Path=ShowTitleColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                        <GridViewColumnHeader Content="Title" />
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Title}" TextTrimming="CharacterEllipsis" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </myworkitems:GridViewColumnExt>
-                    <myworkitems:GridViewColumnExt Width="Auto" Visibility="{Binding Path=ShowAssignedToColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
-                        <GridViewColumnHeader Content="Assigned To"/>
+                    <myworkitems:GridViewColumnExt Width="Auto"
+                                                   Visibility="{Binding Path=ShowAssignedToColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                        <GridViewColumnHeader Content="Assigned To" />
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=AssignedTo}"/>
+                                <TextBlock Text="{Binding Path=AssignedTo}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </myworkitems:GridViewColumnExt>
-                    <myworkitems:GridViewColumnExt Width="Auto" Visibility="{Binding Path=ShowStateColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
-                        <GridViewColumnHeader Content="State"/>
+                    <myworkitems:GridViewColumnExt Width="Auto"
+                                                   Visibility="{Binding Path=ShowStateColumn, Mode=OneWay, Converter={StaticResource BoolToVisConverter}}">
+                        <GridViewColumnHeader Content="State" />
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=State}"/>
+                                <TextBlock Text="{Binding Path=State}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </myworkitems:GridViewColumnExt>
@@ -127,20 +137,20 @@
             </ListView.View>
             <ListView.ContextMenu>
                 <ContextMenu Padding="5">
-                    <MenuItem Header="Add" Name="Add" Command="{Binding AddWorkItemCommand}" 
+                    <MenuItem Header="Add" Name="Add" Command="{Binding AddWorkItemCommand}"
                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}">
                         <MenuItem.Icon>
-                            <fa:ImageAwesome Icon="PlusCircle" 
+                            <fa:ImageAwesome Icon="PlusCircle"
                                              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"
-                                             Height="14" Width="14"></fa:ImageAwesome>
+                                             Height="14" Width="14" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Open" Name="Open" Command="{Binding OpenWorkItemCommand}"
-                                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}">
+                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}">
                         <MenuItem.Icon>
-                            <fa:ImageAwesome Icon="ExternalLink" 
+                            <fa:ImageAwesome Icon="ExternalLink"
                                              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ControlLinkTextKey}}"
-                                             Height="14" Width="14"></fa:ImageAwesome>
+                                             Height="14" Width="14" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
@@ -169,34 +179,38 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"/>
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                     <Setter Property="ToolTip">
                         <Setter.Value>
                             <Grid Width="250">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,6,10" 
+                                <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,6,10"
                                            TextWrapping="Wrap"
-                                           Text="{Binding Path=IdAndTitle}" 
-                                           FontWeight="Bold" FontSize="12"/>
+                                           Text="{Binding Path=IdAndTitle}"
+                                           FontWeight="Bold" FontSize="12" />
 
-                                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,6,3" Text="Type"/>
-                                <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,0,0,3" Text="{Binding Path=WorkItemType}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,6,3" Text="Type" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,0,0,3"
+                                           Text="{Binding Path=WorkItemType}" />
 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,6,3" Text="State"/>
-                                <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,0,0,3" Text="{Binding Path=State}"  FontWeight="DemiBold"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,6,3" Text="State" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,0,0,3" Text="{Binding Path=State}"
+                                           FontWeight="DemiBold" />
 
                                 <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,0,6,3" Text="Assigned To" />
-                                <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,0,0,3" Text="{Binding Path=AssignedTo}"  FontWeight="DemiBold"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,0,0,3"
+                                           Text="{Binding Path=AssignedTo}" FontWeight="DemiBold" />
 
                             </Grid>
                         </Setter.Value>

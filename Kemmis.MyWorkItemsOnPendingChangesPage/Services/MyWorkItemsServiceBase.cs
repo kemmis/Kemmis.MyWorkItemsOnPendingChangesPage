@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.TeamFoundation.Client;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
@@ -24,10 +20,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                 if (_context == null)
                 {
                     var contextManager = GetService<ITeamFoundationContextManager>();
-                    if (contextManager != null)
-                    {
-                        _context = contextManager.CurrentContext;
-                    }
+                    if (contextManager != null) _context = contextManager.CurrentContext;
                 }
 
                 return _context;
@@ -36,11 +29,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
 
         private T GetService<T>()
         {
-
-            if (_serviceProvider != null)
-            {
-                return (T)_serviceProvider.GetService(typeof(T));
-            }
+            if (_serviceProvider != null) return (T) _serviceProvider.GetService(typeof(T));
 
             return default(T);
         }

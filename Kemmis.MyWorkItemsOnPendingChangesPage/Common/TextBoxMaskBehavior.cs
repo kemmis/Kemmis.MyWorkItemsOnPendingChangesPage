@@ -2,32 +2,36 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
 {
     #region Documentation Tags
+
     /// <summary>
-    ///     WPF Maskable TextBox class. Just specify the TextBoxMaskBehavior.Mask attached property to a TextBox. 
+    ///     WPF Maskable TextBox class. Just specify the TextBoxMaskBehavior.Mask attached property to a TextBox.
     ///     It protect your TextBox from unwanted non numeric symbols and make it easy to modify your numbers.
     /// </summary>
     /// <remarks>
-    /// <para>
-    ///     Class Information:
-    ///	    <list type="bullet">
-    ///         <item name="authors">Authors: Ruben Hakopian</item>
-    ///         <item name="date">February 2009</item>
-    ///         <item name="originalURL">http://www.rubenhak.com/?p=8</item>
-    ///     </list>
-    /// </para>
+    ///     <para>
+    ///         Class Information:
+    ///         <list type="bullet">
+    ///             <item name="authors">Authors: Ruben Hakopian</item>
+    ///             <item name="date">February 2009</item>
+    ///             <item name="originalURL">http://www.rubenhak.com/?p=8</item>
+    ///         </list>
+    ///     </para>
     /// </remarks>
+
     #endregion
+
     public class TextBoxMaskBehavior
     {
         #region MinimumValue Property
 
         public static double GetMinimumValue(DependencyObject obj)
         {
-            return (double)obj.GetValue(MinimumValueProperty);
+            return (double) obj.GetValue(MinimumValueProperty);
         }
 
         public static void SetMinimumValue(DependencyObject obj, double value)
@@ -41,20 +45,21 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
                 typeof(double),
                 typeof(TextBoxMaskBehavior),
                 new FrameworkPropertyMetadata(double.NaN, MinimumValueChangedCallback)
-                );
+            );
 
         private static void MinimumValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            TextBox _this = (d as TextBox);
+            var _this = d as TextBox;
             ValidateTextBox(_this);
         }
+
         #endregion
 
         #region MaximumValue Property
 
         public static double GetMaximumValue(DependencyObject obj)
         {
-            return (double)obj.GetValue(MaximumValueProperty);
+            return (double) obj.GetValue(MaximumValueProperty);
         }
 
         public static void SetMaximumValue(DependencyObject obj, double value)
@@ -68,20 +73,21 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
                 typeof(double),
                 typeof(TextBoxMaskBehavior),
                 new FrameworkPropertyMetadata(double.NaN, MaximumValueChangedCallback)
-                );
+            );
 
         private static void MaximumValueChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            TextBox _this = (d as TextBox);
+            var _this = d as TextBox;
             ValidateTextBox(_this);
         }
+
         #endregion
 
         #region Mask Property
 
         public static MaskType GetMask(DependencyObject obj)
         {
-            return (MaskType)obj.GetValue(MaskProperty);
+            return (MaskType) obj.GetValue(MaskProperty);
         }
 
         public static void SetMask(DependencyObject obj, MaskType value)
@@ -95,24 +101,24 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
                 typeof(MaskType),
                 typeof(TextBoxMaskBehavior),
                 new FrameworkPropertyMetadata(MaskChangedCallback)
-                );
+            );
 
         private static void MaskChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.OldValue is TextBox)
             {
                 (e.OldValue as TextBox).PreviewTextInput -= TextBox_PreviewTextInput;
-                DataObject.RemovePastingHandler((e.OldValue as TextBox), (DataObjectPastingEventHandler)TextBoxPastingEventHandler);
+                DataObject.RemovePastingHandler(e.OldValue as TextBox, TextBoxPastingEventHandler);
             }
 
-            TextBox _this = (d as TextBox);
+            var _this = d as TextBox;
             if (_this == null)
                 return;
 
-            if ((MaskType)e.NewValue != MaskType.Any)
+            if ((MaskType) e.NewValue != MaskType.Any)
             {
                 _this.PreviewTextInput += TextBox_PreviewTextInput;
-                DataObject.AddPastingHandler(_this, (DataObjectPastingEventHandler)TextBoxPastingEventHandler);
+                DataObject.AddPastingHandler(_this, TextBoxPastingEventHandler);
             }
 
             ValidateTextBox(_this);
@@ -125,40 +131,35 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
         private static void ValidateTextBox(TextBox _this)
         {
             if (GetMask(_this) != MaskType.Any)
-            {
                 _this.Text = ValidateValue(GetMask(_this), _this.Text, GetMinimumValue(_this), GetMaximumValue(_this));
-            }
         }
 
         private static void TextBoxPastingEventHandler(object sender, DataObjectPastingEventArgs e)
         {
-            TextBox _this = (sender as TextBox);
-            string clipboard = e.DataObject.GetData(typeof(string)) as string;
+            var _this = sender as TextBox;
+            var clipboard = e.DataObject.GetData(typeof(string)) as string;
             clipboard = ValidateValue(GetMask(_this), clipboard, GetMinimumValue(_this), GetMaximumValue(_this));
-            if (!string.IsNullOrEmpty(clipboard))
-            {
-                _this.Text = clipboard;
-            }
+            if (!string.IsNullOrEmpty(clipboard)) _this.Text = clipboard;
             e.CancelCommand();
             e.Handled = true;
         }
 
-        private static void TextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private static void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            TextBox _this = (sender as TextBox);
-            bool isValid = IsSymbolValid(GetMask(_this), e.Text);
+            var _this = sender as TextBox;
+            var isValid = IsSymbolValid(GetMask(_this), e.Text);
             e.Handled = !isValid;
             if (isValid)
             {
-                int caret = _this.CaretIndex;
-                string text = _this.Text;
-                bool textInserted = false;
-                int selectionLength = 0;
+                var caret = _this.CaretIndex;
+                var text = _this.Text;
+                var textInserted = false;
+                var selectionLength = 0;
 
                 if (_this.SelectionLength > 0)
                 {
                     text = text.Substring(0, _this.SelectionStart) +
-                            text.Substring(_this.SelectionStart + _this.SelectionLength);
+                           text.Substring(_this.SelectionStart + _this.SelectionLength);
                     caret = _this.SelectionStart;
                 }
 
@@ -166,7 +167,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
                 {
                     while (true)
                     {
-                        int ind = text.IndexOf(NumberFormatInfo.CurrentInfo.NumberDecimalSeparator);
+                        var ind = text.IndexOf(NumberFormatInfo.CurrentInfo.NumberDecimalSeparator);
                         if (ind == -1)
                             break;
 
@@ -184,7 +185,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
                     {
                         if (caret == 1 && string.Empty + text[0] == NumberFormatInfo.CurrentInfo.NegativeSign)
                         {
-                            text =  NumberFormatInfo.CurrentInfo.NegativeSign + "0" + text.Substring(1);
+                            text = NumberFormatInfo.CurrentInfo.NegativeSign + "0" + text.Substring(1);
                             caret++;
                         }
                     }
@@ -216,38 +217,36 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
                 if (!textInserted)
                 {
                     text = text.Substring(0, caret) + e.Text +
-                        ((caret < _this.Text.Length) ? text.Substring(caret) : string.Empty);
+                           (caret < _this.Text.Length ? text.Substring(caret) : string.Empty);
 
                     caret++;
                 }
 
                 try
                 {
-                    double val = Convert.ToDouble(text);
-                    double newVal = ValidateLimits(GetMinimumValue(_this), GetMaximumValue(_this), val);
+                    var val = Convert.ToDouble(text);
+                    var newVal = ValidateLimits(GetMinimumValue(_this), GetMaximumValue(_this), val);
                     if (val != newVal)
-                    {
                         text = newVal.ToString();
-                    }
                     else if (val == 0)
-                    {
                         if (!text.Contains(NumberFormatInfo.CurrentInfo.NumberDecimalSeparator))
                             text = "0";
-                    }
                 }
                 catch
                 {
                     text = "0";
                 }
 
-                while (text.Length > 1 && text[0] == '0' && string.Empty + text[1] != NumberFormatInfo.CurrentInfo.NumberDecimalSeparator)
+                while (text.Length > 1 && text[0] == '0' &&
+                       string.Empty + text[1] != NumberFormatInfo.CurrentInfo.NumberDecimalSeparator)
                 {
                     text = text.Substring(1);
                     if (caret > 0)
                         caret--;
                 }
 
-                while (text.Length > 2 && string.Empty + text[0] == NumberFormatInfo.CurrentInfo.NegativeSign && text[1] == '0' && string.Empty + text[2] != NumberFormatInfo.CurrentInfo.NumberDecimalSeparator)
+                while (text.Length > 2 && string.Empty + text[0] == NumberFormatInfo.CurrentInfo.NegativeSign &&
+                       text[1] == '0' && string.Empty + text[2] != NumberFormatInfo.CurrentInfo.NumberDecimalSeparator)
                 {
                     text = NumberFormatInfo.CurrentInfo.NegativeSign + text.Substring(2);
                     if (caret > 1)
@@ -282,6 +281,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
                     catch
                     {
                     }
+
                     return string.Empty;
 
                 case MaskType.Decimal:
@@ -294,6 +294,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
                     catch
                     {
                     }
+
                     return string.Empty;
             }
 
@@ -303,16 +304,12 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
         private static double ValidateLimits(double min, double max, double value)
         {
             if (!min.Equals(double.NaN))
-            {
                 if (value < min)
                     return min;
-            }
 
             if (!max.Equals(double.NaN))
-            {
                 if (value > max)
                     return max;
-            }
 
             return value;
         }
@@ -338,11 +335,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
 
             if (mask.Equals(MaskType.Integer) || mask.Equals(MaskType.Decimal))
             {
-                foreach (char ch in str)
-                {
-                    if (!Char.IsDigit(ch))
+                foreach (var ch in str)
+                    if (!char.IsDigit(ch))
                         return false;
-                }
 
                 return true;
             }
@@ -358,5 +353,5 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common
         Any,
         Integer,
         Decimal
-    }  
+    }
 }

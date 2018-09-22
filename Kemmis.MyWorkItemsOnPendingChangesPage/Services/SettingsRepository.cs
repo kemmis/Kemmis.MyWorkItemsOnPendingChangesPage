@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Models;
 using Microsoft.VisualStudio.Settings;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Settings;
 using Newtonsoft.Json;
 
@@ -17,8 +14,6 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
         private const string CollectionPath = "MyWorkItemsOnPendingChangesPage";
         private const string ClassicPropertyName = "AllSettings";
 
-        private string PropertyName => Context.TeamProjectCollection.Name;
-
         private readonly WritableSettingsStore _writableSettingsStore;
 
         public SettingsRepository(IServiceProvider serviceProvider) : base(serviceProvider)
@@ -27,9 +22,11 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             _writableSettingsStore = ssm.GetWritableSettingsStore(SettingsScope.UserSettings);
         }
 
+        private string PropertyName => Context.TeamProjectCollection.Name;
+
         public Task<SettingsModel> GetSettingsAsync()
         {
-            return System.Threading.Tasks.Task.Run(() =>
+            return Task.Run(() =>
             {
                 try
                 {
@@ -55,9 +52,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             try
             {
                 if (!_writableSettingsStore.CollectionExists(CollectionPath))
-                {
                     _writableSettingsStore.CreateCollection(CollectionPath);
-                }
 
                 _writableSettingsStore.SetString(CollectionPath, PropertyName, settingsString);
             }
@@ -75,7 +70,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                 return JsonConvert.DeserializeObject<SettingsModel>(settingsString);
             }
 
-            return new SettingsModel()
+            return new SettingsModel
             {
                 WorkItemTypes = new List<SettingItemModel>(),
                 WorkItemStatuses = new List<SettingItemModel>(),
@@ -87,22 +82,21 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
 
         public Task<SettingsModel> SaveSettingsAsync(SettingsModel settingsModel)
         {
-            return System.Threading.Tasks.Task.Run(() =>
+            return Task.Run(() =>
             {
                 try
                 {
                     if (!_writableSettingsStore.CollectionExists(CollectionPath))
-                    {
                         _writableSettingsStore.CreateCollection(CollectionPath);
-                    }
 
-                    string value = JsonConvert.SerializeObject(settingsModel);
+                    var value = JsonConvert.SerializeObject(settingsModel);
                     _writableSettingsStore.SetString(CollectionPath, PropertyName, value);
                 }
                 catch (Exception ex)
                 {
                     Debug.Fail(ex.Message);
                 }
+
                 return settingsModel;
             });
         }

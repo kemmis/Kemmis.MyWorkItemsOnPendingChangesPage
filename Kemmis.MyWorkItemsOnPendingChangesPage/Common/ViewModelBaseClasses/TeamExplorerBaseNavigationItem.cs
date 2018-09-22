@@ -4,64 +4,80 @@
 */
 
 using System;
+using System.Drawing;
 using Microsoft.TeamFoundation.Controls;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.Common.ViewModelBaseClasses
 {
     /// <summary>
-    /// Team Explorer base navigation item class.
+    ///     Team Explorer base navigation item class.
     /// </summary>
     public class TeamExplorerBaseNavigationItem : TeamExplorerBase, ITeamExplorerNavigationItem
     {
         /// <summary>
-        /// Constructor.
+        ///     Constructor.
         /// </summary>
         public TeamExplorerBaseNavigationItem(IServiceProvider serviceProvider)
         {
-            this.ServiceProvider = serviceProvider;
+            ServiceProvider = serviceProvider;
         }
 
         #region ITeamExplorerNavigationItem
 
         /// <summary>
-        /// Get/set the item text.
+        ///     Get/set the item text.
         /// </summary>
         public string Text
         {
-            get { return m_text; }
-            set { m_text = value; RaisePropertyChanged("Text"); }
+            get => m_text;
+            set
+            {
+                m_text = value;
+                RaisePropertyChanged("Text");
+            }
         }
+
         private string m_text;
 
         /// <summary>
-        /// Get/set the item image.
+        ///     Get/set the item image.
         /// </summary>
-        public System.Drawing.Image Image
+        public Image Image
         {
-            get { return m_image; }
-            set { m_image = value; RaisePropertyChanged("Image"); }
+            get => m_image;
+            set
+            {
+                m_image = value;
+                RaisePropertyChanged("Image");
+            }
         }
-        private System.Drawing.Image m_image;
+
+        private Image m_image;
 
         /// <summary>
-        /// Get/set the IsVisible flag.
+        ///     Get/set the IsVisible flag.
         /// </summary>
         public bool IsVisible
         {
-            get { return m_isVisible; }
-            set { m_isVisible = value; RaisePropertyChanged("IsVisible"); }
+            get => m_isVisible;
+            set
+            {
+                m_isVisible = value;
+                RaisePropertyChanged("IsVisible");
+            }
         }
+
         private bool m_isVisible = true;
 
         /// <summary>
-        /// Invalidate the item state.
+        ///     Invalidate the item state.
         /// </summary>
         public virtual void Invalidate()
         {
         }
 
         /// <summary>
-        /// Execute the item action.
+        ///     Execute the item action.
         /// </summary>
         public virtual void Execute()
         {

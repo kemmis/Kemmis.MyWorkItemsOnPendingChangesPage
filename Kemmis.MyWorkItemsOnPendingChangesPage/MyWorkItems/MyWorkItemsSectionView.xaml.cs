@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
 {
     /// <summary>
-    /// Interaction logic for MyWorkItemsSectionView.xaml
+    ///     Interaction logic for MyWorkItemsSectionView.xaml
     /// </summary>
     public partial class MyWorkItemsSectionView : UserControl
     {
@@ -29,16 +28,16 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
             _viewModel = e.NewValue as MyWorkItemsSectionViewModel;
         }
 
-        
-        private void ListView_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+
+        private void ListView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (!e.Handled)
             {
                 e.Handled = true;
                 var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
-                eventArg.RoutedEvent = UIElement.MouseWheelEvent;
+                eventArg.RoutedEvent = MouseWheelEvent;
                 eventArg.Source = sender;
-                var parent = ((Control)sender).Parent as UIElement;
+                var parent = ((Control) sender).Parent as UIElement;
                 parent.RaiseEvent(eventArg);
             }
         }

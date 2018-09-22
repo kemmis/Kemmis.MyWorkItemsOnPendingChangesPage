@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -9,7 +6,6 @@ using Kemmis.MyWorkItemsOnPendingChangesPage.Common;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Common.ViewModelBaseClasses;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Models;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Services;
-using Microsoft.Internal.VisualStudio.PlatformUI;
 using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.MVVM;
 
@@ -19,15 +15,47 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
     public class SettingsPageViewModel : TeamExplorerBasePage
     {
         public const string PageId = "4C82595C-9E77-467E-9F25-D886E694C363";
+
+        private RelayCommand _addStatusCommand;
+
+        private RelayCommand _addTypeCommand;
+
+        private RelayCommand _cancelCommand;
+
+        private SortedObservableRangeCollection<SettingItemModel> _columns;
+        private readonly object _columnsLock = new object();
+        private int _daysBackToQuery;
+        private int _maxWorkItems;
+
+        private RelayCommand _refreshStatusesCommand;
+
+        private RelayCommand _refreshTypesCommand;
+
+        private RelayCommand _removeStatusCommand;
+
+        private RelayCommand _removeTypeCommand;
+
+        private RelayCommand _saveCommand;
+        private SettingItemModel _selectedStatus;
+
+        private SettingItemModel _selectedType;
         private SettingsRepository _settingsRepository;
+        private readonly object _statusesLock = new object();
+        private string _statusToAdd;
+        private readonly object _typesLock = new object();
+        private string _typeToAdd;
         private WorkItemRepository _workItemRepository;
-        private object _statusesLock = new object();
-        private object _typesLock = new object();
-        private object _columnsLock = new object();
+        private SortedObservableRangeCollection<SettingItemModel> _workItemStatuses;
+        private SortedObservableRangeCollection<SettingItemModel> _workItemTypes;
+
+        public SettingsPageViewModel()
+        {
+            Title = "My Work Items Settings";
+        }
 
         public int MaxWorkItems
         {
-            get { return _maxWorkItems; }
+            get => _maxWorkItems;
             set
             {
                 if (_maxWorkItems != value)
@@ -35,16 +63,12 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
                     _maxWorkItems = value;
                     RaisePropertyChanged("MaxWorkItems");
                 }
-
             }
         }
 
         public int DaysBackToQuery
         {
-            get
-            {
-                return _daysBackToQuery;
-            }
+            get => _daysBackToQuery;
             set
             {
                 if (_daysBackToQuery != value)
@@ -55,8 +79,6 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
-        private SortedObservableRangeCollection<SettingItemModel> _columns;
-
         public SortedObservableRangeCollection<SettingItemModel> Columns
         {
             get
@@ -66,6 +88,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
                     _columns = new SortedObservableRangeCollection<SettingItemModel>();
                     BindingOperations.EnableCollectionSynchronization(_columns, _columnsLock);
                 }
+
                 return _columns;
             }
             set
@@ -87,6 +110,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
                     _workItemTypes = new SortedObservableRangeCollection<SettingItemModel>();
                     BindingOperations.EnableCollectionSynchronization(_workItemTypes, _typesLock);
                 }
+
                 return _workItemTypes;
             }
             set
@@ -101,7 +125,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         public string TypeToAdd
         {
-            get { return _typeToAdd; }
+            get => _typeToAdd;
             set
             {
                 if (_typeToAdd != value)
@@ -114,7 +138,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         public string StatusToAdd
         {
-            get { return _statusToAdd; }
+            get => _statusToAdd;
             set
             {
                 if (_statusToAdd != value)
@@ -127,7 +151,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         public SettingItemModel SelectedStatus
         {
-            get { return _selectedStatus; }
+            get => _selectedStatus;
             set
             {
                 if (_selectedStatus != value)
@@ -138,10 +162,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
-        private SettingItemModel _selectedType;
         public SettingItemModel SelectedType
         {
-            get { return _selectedType; }
+            get => _selectedType;
             set
             {
                 if (_selectedType != value)
@@ -161,6 +184,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
                     _workItemStatuses = new SortedObservableRangeCollection<SettingItemModel>();
                     BindingOperations.EnableCollectionSynchronization(_workItemStatuses, _statusesLock);
                 }
+
                 return _workItemStatuses;
             }
             set
@@ -173,10 +197,23 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             }
         }
 
-        public SettingsPageViewModel()
-        {
-            Title = "My Work Items Settings";
-        }
+        public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(Save));
+        public RelayCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new RelayCommand(Close));
+        public RelayCommand AddStatusCommand => _addStatusCommand ?? (_addStatusCommand = new RelayCommand(AddStatus));
+
+        public RelayCommand RemoveStatusCommand =>
+            _removeStatusCommand ?? (_removeStatusCommand = new RelayCommand(RemoveStatus));
+
+        public RelayCommand AddTypeCommand => _addTypeCommand ?? (_addTypeCommand = new RelayCommand(AddType));
+
+        public RelayCommand RemoveTypeCommand =>
+            _removeTypeCommand ?? (_removeTypeCommand = new RelayCommand(RemoveType));
+
+        public RelayCommand RefreshTypesCommand =>
+            _refreshTypesCommand ?? (_refreshTypesCommand = new AsyncRelayCommand(RefreshTypes));
+
+        public RelayCommand RefreshStatusesCommand =>
+            _refreshStatusesCommand ?? (_refreshStatusesCommand = new AsyncRelayCommand(RefreshStatuses));
 
         public override void Initialize(object sender, PageInitializeEventArgs e)
         {
@@ -203,20 +240,11 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             DaysBackToQuery = settings.DaysBackToQuery;
             MaxWorkItems = settings.MaxWorkItems;
 
-            if (!WorkItemTypes.Any())
-            {
-                await LoadTypesFromServer();
-            }
+            if (!WorkItemTypes.Any()) await LoadTypesFromServer();
 
-            if (!WorkItemStatuses.Any())
-            {
-                await LoadStatusesFromServer();
-            }
+            if (!WorkItemStatuses.Any()) await LoadStatusesFromServer();
 
-            if (!Columns.Any())
-            {
-                await LoadColumnDefaults();
-            }
+            if (!Columns.Any()) await LoadColumnDefaults();
         }
 
         private async Task LoadTypesFromServer()
@@ -240,42 +268,11 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
             IsBusy = false;
         }
 
-        private RelayCommand _saveCommand;
-        public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(Save));
-
-        private RelayCommand _cancelCommand;
-        private SortedObservableRangeCollection<SettingItemModel> _workItemTypes;
-        private SortedObservableRangeCollection<SettingItemModel> _workItemStatuses;
-        public RelayCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new RelayCommand(Close));
-
-        private RelayCommand _addStatusCommand;
-        public RelayCommand AddStatusCommand => _addStatusCommand ?? (_addStatusCommand = new RelayCommand(AddStatus));
-
-        private RelayCommand _removeStatusCommand;
-        public RelayCommand RemoveStatusCommand => _removeStatusCommand ?? (_removeStatusCommand = new RelayCommand(RemoveStatus));
-
-        private RelayCommand _addTypeCommand;
-        public RelayCommand AddTypeCommand => _addTypeCommand ?? (_addTypeCommand = new RelayCommand(AddType));
-
-        private RelayCommand _removeTypeCommand;
-        public RelayCommand RemoveTypeCommand => _removeTypeCommand ?? (_removeTypeCommand = new RelayCommand(RemoveType));
-
-        private RelayCommand _refreshTypesCommand;
-        public RelayCommand RefreshTypesCommand => _refreshTypesCommand ?? (_refreshTypesCommand = new AsyncRelayCommand(RefreshTypes));
-
-        private RelayCommand _refreshStatusesCommand;
-        private string _statusToAdd;
-        private SettingItemModel _selectedStatus;
-        private int _daysBackToQuery;
-        private string _typeToAdd;
-        private int _maxWorkItems;
-        public RelayCommand RefreshStatusesCommand => _refreshStatusesCommand ?? (_refreshStatusesCommand = new AsyncRelayCommand(RefreshStatuses));
-
         private void AddType()
         {
             if (!string.IsNullOrWhiteSpace(TypeToAdd))
             {
-                WorkItemTypes.Add(new SettingItemModel()
+                WorkItemTypes.Add(new SettingItemModel
                 {
                     Checked = true,
                     Name = TypeToAdd
@@ -286,10 +283,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         private void RemoveType()
         {
-            if (SelectedType != null)
-            {
-                WorkItemTypes.Remove(SelectedType);
-            }
+            if (SelectedType != null) WorkItemTypes.Remove(SelectedType);
         }
 
         private Task RefreshTypes()
@@ -301,7 +295,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         {
             if (!string.IsNullOrWhiteSpace(StatusToAdd))
             {
-                WorkItemStatuses.Add(new SettingItemModel()
+                WorkItemStatuses.Add(new SettingItemModel
                 {
                     Checked = true,
                     Name = StatusToAdd
@@ -312,10 +306,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         private void RemoveStatus()
         {
-            if (SelectedStatus != null)
-            {
-                WorkItemStatuses.Remove(SelectedStatus);
-            }
+            if (SelectedStatus != null) WorkItemStatuses.Remove(SelectedStatus);
         }
 
         private Task RefreshStatuses()
@@ -325,7 +316,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 
         private void Save()
         {
-            var settings = new SettingsModel()
+            var settings = new SettingsModel
             {
                 DaysBackToQuery = DaysBackToQuery,
                 MaxWorkItems = MaxWorkItems,
@@ -343,10 +334,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
         {
             // Navigate to the settings page
             var teamExplorer = GetService<ITeamExplorer>();
-            if (teamExplorer != null)
-            {
-                teamExplorer.CurrentPage.Close();
-            }
+            if (teamExplorer != null) teamExplorer.CurrentPage.Close();
         }
     }
 }

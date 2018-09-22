@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using Microsoft.TeamFoundation.Controls;
-using Microsoft.TeamFoundation.Controls.WPF;
+﻿using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
@@ -26,17 +19,18 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.MyWorkItems
         protected override void InitializeView(SectionInitializeEventArgs e)
         {
             base.InitializeView(e);
-            var view = base.View as MyWorkItemsSectionView;
+            var view = View as MyWorkItemsSectionView;
             // do intit stuff here if needed
         }
 
         public override void Initialize(object sender, SectionInitializeEventArgs e)
         {
             base.Initialize(sender, e);
-            if (base.ViewModel != null && base.ViewModel is MyWorkItemsSectionViewModel && base.View != null && base.View is MyWorkItemsSectionView)
+            if (ViewModel != null && ViewModel is MyWorkItemsSectionViewModel && View != null &&
+                View is MyWorkItemsSectionView)
             {
-                var viewModel = (MyWorkItemsSectionViewModel)base.ViewModel;
-                var view = (MyWorkItemsSectionView)base.View;
+                var viewModel = (MyWorkItemsSectionViewModel) ViewModel;
+                var view = (MyWorkItemsSectionView) View;
 
                 // add some commands if needed
 

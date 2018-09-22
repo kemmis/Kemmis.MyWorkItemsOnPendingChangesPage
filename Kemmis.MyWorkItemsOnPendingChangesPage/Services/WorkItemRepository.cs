@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Kemmis.MyWorkItemsOnPendingChangesPage.Models;
-using Microsoft.TeamFoundation.Client;
-using Microsoft.TeamFoundation.Server;
-using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
@@ -17,7 +13,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
         public WorkItemRepository(IServiceProvider serviceProvider) : base(serviceProvider)
         {
         }
-        
+
         public Task GetWorkItemTypesAsync(ObservableCollection<SettingItemModel> collection)
         {
             return Task.Run(() =>
@@ -25,17 +21,11 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                 if (Context != null && Context.HasCollection && Context.HasTeamProject)
                 {
                     var wis = Context.TeamProjectCollection.GetService<WorkItemStore>();
-                    
+
                     foreach (Project p in wis.Projects)
-                    {
-                        foreach (WorkItemType t in p.WorkItemTypes)
-                        {
-                            if (collection.All(s => s.Name != t.Name))
-                            {
-                                collection.Add(new SettingItemModel { Name = t.Name });
-                            }
-                        }
-                    }
+                    foreach (WorkItemType t in p.WorkItemTypes)
+                        if (collection.All(s => s.Name != t.Name))
+                            collection.Add(new SettingItemModel {Name = t.Name});
                 }
             });
         }
@@ -43,26 +33,18 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
         public Task GetWorkItemStatesAsync(ObservableCollection<SettingItemModel> collection)
         {
             return Task.Run(() =>
-             {
-                 if (Context != null && Context.HasCollection && Context.HasTeamProject)
-                 {
-                     var wis = Context.TeamProjectCollection.GetService<WorkItemStore>();
-                     
-                     foreach (Project p in wis.Projects)
-                     {
-                         foreach (WorkItemType t in p.WorkItemTypes)
-                         {
-                             foreach (string stateValue in t.FieldDefinitions["State"].AllowedValues)
-                             {
-                                 if (collection.All(s => s.Name != stateValue))
-                                 {
-                                     collection.Add(new SettingItemModel { Name = stateValue });
-                                 }
-                             }
-                         }
-                     }
-                 }
-             });
+            {
+                if (Context != null && Context.HasCollection && Context.HasTeamProject)
+                {
+                    var wis = Context.TeamProjectCollection.GetService<WorkItemStore>();
+
+                    foreach (Project p in wis.Projects)
+                    foreach (WorkItemType t in p.WorkItemTypes)
+                    foreach (string stateValue in t.FieldDefinitions["State"].AllowedValues)
+                        if (collection.All(s => s.Name != stateValue))
+                            collection.Add(new SettingItemModel {Name = stateValue});
+                }
+            });
         }
 
         public Task GetWorkItemsAsync(ObservableCollection<WorkItemModel> collection, SettingsModel settings)
@@ -92,14 +74,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
 
                     foreach (WorkItem w in workItems)
                     {
-                        if (collection.Count >= settings.MaxWorkItems)
-                        {
-                            break;
-                        }
+                        if (collection.Count >= settings.MaxWorkItems) break;
 
                         if (collection.All(t => t.Id != w.Id))
-                        {
-                            collection.Add(new WorkItemModel()
+                            collection.Add(new WorkItemModel
                             {
                                 Title = w.Title,
                                 Id = w.Id,
@@ -107,10 +85,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                                 WorkItemType = w.Type.Name,
                                 AssignedTo = w["Assigned To"].ToString()
                             });
-                        }
                     }
+                }
 
-                };
+                ;
             });
         }
 

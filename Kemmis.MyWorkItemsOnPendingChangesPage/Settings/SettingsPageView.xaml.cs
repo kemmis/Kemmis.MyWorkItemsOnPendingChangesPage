@@ -1,12 +1,9 @@
-﻿using System;
-using System.Windows.Controls;
-using Microsoft.TeamFoundation.Controls;
-using Microsoft.TeamFoundation.MVVM;
+﻿using System.Windows.Controls;
 
 namespace Kemmis.MyWorkItemsOnPendingChangesPage.Settings
 {
     /// <summary>
-    /// Interaction logic for SettingsPageView.xaml
+    ///     Interaction logic for SettingsPageView.xaml
     /// </summary>
     public partial class SettingsPageView : UserControl
     {
