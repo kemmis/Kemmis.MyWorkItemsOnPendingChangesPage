@@ -23,9 +23,9 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                     var wis = Context.TeamProjectCollection.GetService<WorkItemStore>();
 
                     foreach (Project p in wis.Projects)
-                    foreach (WorkItemType t in p.WorkItemTypes)
-                        if (collection.All(s => s.Name != t.Name))
-                            collection.Add(new SettingItemModel {Name = t.Name});
+                        foreach (WorkItemType t in p.WorkItemTypes)
+                            if (collection.All(s => s.Name != t.Name))
+                                collection.Add(new SettingItemModel { Name = t.Name });
                 }
             });
         }
@@ -39,10 +39,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                     var wis = Context.TeamProjectCollection.GetService<WorkItemStore>();
 
                     foreach (Project p in wis.Projects)
-                    foreach (WorkItemType t in p.WorkItemTypes)
-                    foreach (string stateValue in t.FieldDefinitions["State"].AllowedValues)
-                        if (collection.All(s => s.Name != stateValue))
-                            collection.Add(new SettingItemModel {Name = stateValue});
+                        foreach (WorkItemType t in p.WorkItemTypes)
+                            foreach (string stateValue in t.FieldDefinitions["State"].AllowedValues)
+                                if (collection.All(s => s.Name != stateValue))
+                                    collection.Add(new SettingItemModel { Name = stateValue });
                 }
             });
         }
@@ -59,8 +59,10 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
                     var statesString = "'" + string.Join("','", states) + "'";
                     var types = settings.WorkItemTypes.Where(w => w.Checked).Select(w => w.Name).ToArray();
                     var typesString = "'" + string.Join("','", types) + "'";
+                    var teamProjectName = Context.TeamProjectName;
 
                     var queryText = $@"select * from workitems where 
+                        [Team Project] = '{teamProjectName}' and
 	                    [Changed Date] > '{sinceDate}' and 
 	                    [State] in ({statesString}) and 
 	                    [Assigned To]=@me and
@@ -68,7 +70,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
 	                    order by [Changed Date] desc";
 
                     var workItems = wis.Query(queryText);
-
+                  
                     // clear collection so items truely get refreshed
                     collection.Clear();
 
