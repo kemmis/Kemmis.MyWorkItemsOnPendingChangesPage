@@ -51,3 +51,8 @@ This limits the work item list to showing the most recent specified number of wo
 # Building & Debugging
 
 http://stackoverflow.com/questions/9281662/how-to-debug-visual-studio-extensions
+
+These settings have been added to the csproj file, so you shouldn't have to manually add these in the future. However I'm putting this here for future reference:
+
+- Project Properties > Debug Page > Start action = Start external program: `C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe`
+- Project Properties > Debug Page > Start options > Command line arguments: `/rootsuffix Exp`
