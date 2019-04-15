@@ -1,11 +1,13 @@
 # My Work Items for Visual Studio 2017
 
-This is an extension for Visual Studio 2015 and 2017 that makes it quick and easy to 
+This is an extension for Visual Studio 2015, 2017 and 2019 that makes it quick and easy to 
 associate your TFS work items when checking in pending changes. You tell the 
 extension what type and status of work items you want to see in the Pending 
 Changes page, and then they magically show up for you to choose from.
 
 ## Download
+
+[Get it for VS 2019](https://marketplace.visualstudio.com/items?itemName=TheRealRafeKemmis.mwivs2019)
 
 [Get it for VS 2017](https://marketplace.visualstudio.com/items?itemName=TheRealRafeKemmis.MyWorkItemsforVS2017)
 
@@ -51,3 +53,8 @@ This limits the work item list to showing the most recent specified number of wo
 # Building & Debugging
 
 http://stackoverflow.com/questions/9281662/how-to-debug-visual-studio-extensions
+
+These settings have been added to the csproj file, so you shouldn't have to manually add these in the future. However I'm putting this here for future reference:
+
+- Project Properties > Debug Page > Start action = Start external program: `C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe`
+- Project Properties > Debug Page > Start options > Command line arguments: `/rootsuffix Exp`
