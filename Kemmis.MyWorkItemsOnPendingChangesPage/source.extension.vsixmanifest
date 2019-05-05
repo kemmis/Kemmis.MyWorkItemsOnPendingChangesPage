@@ -4,7 +4,7 @@
                  xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
         <Identity Id="Kemmis.MyWorkItemsOnPendingChangesPage.Rafe Kemmis.8043c452-b058-4276-bad3-042e90421c69"
-                  Version="1.0.12" Language="en-US" Publisher="Rafe Kemmis" />
+                  Version="1.0.13" Language="en-US" Publisher="Rafe Kemmis" />
         <DisplayName>My Work Items for VS2019</DisplayName>
         <Description xml:space="preserve">Displays the most recently changed work items of your choice inside of the Pending Changes and  Git Changes pages in Team Explorer and allows you to associate with your checkin. If you've recently modified (changed the status) of a work item assigned to you, then it will show up for you to use.</Description>
         <MoreInfo>https://github.com/kemmis/Kemmis.MyWorkItemsOnPendingChangesPage</MoreInfo>
