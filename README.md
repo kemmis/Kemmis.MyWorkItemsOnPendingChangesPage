@@ -1,4 +1,4 @@
-# My Work Items for Visual Studio 2017
+# My Work Items for Visual Studio 2019
 
 This is an extension for Visual Studio 2015, 2017 and 2019 that makes it quick and easy to 
 associate your TFS work items when checking in pending changes. You tell the 
