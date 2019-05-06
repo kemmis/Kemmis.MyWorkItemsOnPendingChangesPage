@@ -22,7 +22,7 @@ namespace Kemmis.MyWorkItemsOnPendingChangesPage.Services
             _writableSettingsStore = ssm.GetWritableSettingsStore(SettingsScope.UserSettings);
         }
 
-        private string PropertyName => Context.TeamProjectCollection.Name;
+        private string PropertyName => Context?.TeamProjectCollection?.Name ?? "";
 
         public Task<SettingsModel> GetSettingsAsync()
         {
